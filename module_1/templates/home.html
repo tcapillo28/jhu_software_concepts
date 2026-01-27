@@ -7,18 +7,19 @@
 
 <body>
     <h1> Tonya Capillo</h1>
-    <h2> JHU Course 605.256 </h2>
+    <h2> Master's Student at Johns Hopkins University </h2>
     <strong><nav>
         <ul class="menu">
+            <li><a href="{{ url_for('home') }}"> Home</a></li>
             <li><a href="{{ url_for('contact') }}"> Contact</a></li>
             <li><a href="{{ url_for('projects') }}"> Projects</a></li>
         </ul>
     </nav></strong>
-
+    <h3> About Me</h3>
 <!-- Image -->
     <img src="{{url_for('static', filename='image.jpg')}}"
          align="left"
-         style="width:450px;height:500px;"/>
+         style="width:410px;height:500px;"/>
 
     <p> I was born and raised on the outskirts of Hollister, CA, and I earned my B.S. in Bioengineering with a minor in Bioinformatics from UCSC in 2020.
         During undergrad I was exposed to several programming languages including R, MATLAB, C++, Java, and Python.
