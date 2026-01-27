@@ -1,31 +1,70 @@
 * {
     box-sizing: border-box;
 }
+
+/* Page styling */
 body {
     font-family: Arial, serif;
     font-size: 20px;
-    margin:0 auto;
+    margin:0;
     text-align: center;
 }
 
-a,
-a:visited {
-    color: blueviolet;
+/* NAV BAR STYLING */
+nav {
+    position: absolute;      /* Move nav to top-right */
+    top: 20px;
+    right: 20px;
+    background-color: #f0e6ff;   /* Light purple background */
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+
+
+a,
+a:visited {
+    color: black;
+}
+
+/* Hover effect */
 a:hover{
     color: darkmagenta;
 }
 
+/* Link styling */
+nav a,
+nav a:visited {
+    color: blueviolet;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
 nav ul {
     list-style: none;
-    padding:0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
 }
 
 nav ul li {
     display: inline;
     margin:0 5px;
 }
+
+
+
+/* ACTIVE TAB (highlight current page) */
+nav a.active {
+    background-color: darkmagenta;
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
 
 main {
     width: 80%;
