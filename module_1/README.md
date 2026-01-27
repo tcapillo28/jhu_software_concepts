@@ -12,4 +12,7 @@
 
 
 # Requirements.txt
-## Was generated in the terminal: pop freeze > requiremtns.txt
+### Was generated in the terminal: pop freeze > requiremtns.txt
+
+# Screenshots of each tab
+## They can be found in the Screenshots folder
