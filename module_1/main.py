@@ -11,6 +11,17 @@ app = Flask(__name__) # Flask constructor
 def home():
     return render_template('home.html')
 
+@app.route('/contact')
+
+def contact():
+    return render_template('contact.html')
+
+@app.route('/projects')
+
+def contact():
+    return render_template('projects.html')
+
+
 
 if __name__ == '__main__':
     # Run the applicaiton
