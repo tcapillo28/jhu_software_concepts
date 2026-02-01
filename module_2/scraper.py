@@ -1,14 +1,26 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import json
+# 1. HELPER FUNCTIONS GO HERE
+def split_program_and_degree(text):
+    degree_keywords = ["PhD", "Masters", "Master", "MS", "MA", "MEng", "MPH", "MBA"]
+
+    for degree in degree_keywords:
+        if text.endswith(degree):
+            program = text[: -len(degree)].strip()
+            return program, degree
+
+    # If no degree found
+    return text, None
 
 
+# 2. HTML FETCH FUNCTION
 def fetch_html(page):
     url = f"https://www.thegradcafe.com/survey/?page={page}"
     req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
     return urlopen(req).read().decode("utf-8")
 
-
+# 3. PARSER FUNCTION
 def parse_table(html):
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table")
@@ -27,19 +39,23 @@ def parse_table(html):
         if len(cols) < 5:
             continue
 
+            # Extract program + degree
+        program_raw = cols[1]
+        program_name, degree_type = split_program_and_degree(program_raw)
+
         entry = {
             "school": cols[0],
-            "program": cols[1],
+            "program": program_name,
+            "degree_type": degree_type,
             "added_on": cols[2],
-            "decision": cols[3],
-            "notes": cols[4]
+            "decision": cols[3]
         }
 
         results.append(entry)
 
     return results
 
-
+# 4. MAIN SCRIPT
 if __name__ == "__main__":
     all_data = []
 
