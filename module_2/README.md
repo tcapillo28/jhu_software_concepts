@@ -1,7 +1,7 @@
-Tonya Capillo
-JHED ID:
-Module_2: Web scrapping
-Due Feb 1, 2026 11:59 PM EST
+# Tonya Capillo
+### JHED ID:
+### Module_2: Web scrapping
+### Due Feb 1, 2026 11:59 PM EST
 
 Project Overview:
 This project implements a web scraper that collects recent admissions results from The GradCafe using urllib3 and parses the data with BeautifulSoup.
