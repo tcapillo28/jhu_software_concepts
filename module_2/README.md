@@ -1,12 +1,12 @@
-# Tonya Capillo
-# JHED ID:
-# Module_2: Web scrapping
-# Due Feb 1, 2026 11:59 PM EST
+Tonya Capillo
+JHED ID:
+Module_2: Web scrapping
+Due Feb 1, 2026 11:59 PM EST
 
-# Project Overview:
-### This project implements a web scraper that collects recent admissions results from The GradCafe using urllib3 and parses the data with BeautifulSoup.
-### The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
-### The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
+Project Overview:
+This project implements a web scraper that collects recent admissions results from The GradCafe using urllib3 and parses the data with BeautifulSoup.
+The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
+The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
 
     1. robots.txt compliance
         Before scraping any data, I retrieved and reviewed the site’s robots.txt file to ensure that my scraper follows the website’s access policies.
