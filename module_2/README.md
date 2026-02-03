@@ -1,12 +1,10 @@
 # Module_2: Web scrapping 
-Tonya Capillo
-JHED ID:
-Due Feb 1, 2026 11:59 PM EST
+Tonya Capillo | JHED ID: 174BAB | Due Feb 1, 2026 11:59 PM EST
 
 Project Overview:
 This project implements a web scraper that collects recent admissions results from The GradCafe, using urllib3 and BeautifulSoup to parse the data.
 The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
-The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
+The scraper is designed to be modular and compliant with the website’s robots.txt rules.
 
 # How to Run the Program:
 The following files will extract data from GradCafe and generate a *.json file: main.py, scrape.py, and clean.py
@@ -161,6 +159,8 @@ Each cleaned entry includes:
 - comments — list of comments scraped from the detail page
 - url — link to the original GradCafe entry
 
+In the applicant_data.json the comments section doesn't return a 'None' or "" and instead returns []. 
+
 ####  Date Normalization
 The helper function _normalize_date() currently returns the date unchanged unless it is missing. This placeholder exists so that future improvements (e.g., adding missing years or converting formats) can be implemented without changing the rest of the pipeline. Some dates contain the month and day but not the year. 
 
@@ -168,11 +168,6 @@ The helper function _normalize_date() currently returns the date unchanged unles
 ### 3. Main program description:
 The main.py file serves as the orchestrator for the entire data‑processing pipeline, coordinating the scraping, cleaning, and saving of GradCafe admissions data. It begins by starting a runtime timer, then calls scrape_data() to collect raw entries from the website while respecting the built‑in 30,000‑entry safety cap. The scraped results are saved to saved_data.json and then reloaded with load_data() to ensure the cleaning stage always operates on a stable, reproducible dataset. Next, clean_data() transforms the raw entries into a consistent, structured format suitable for downstream LLM processing and saves the cleaned output as applicant_data.json. Finally, the script prints a summary of the number of entries scraped and cleaned, along with the total runtime. 
 
-
-
-
-### 4. Limitations:
-In the applicant_data.json the comments section doesn't return a 'None' or "" and instead returns []. 
 
 
 
