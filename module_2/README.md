@@ -8,6 +8,12 @@ This project implements a web scraper that collects recent admissions results fr
 The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
 The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
 
+# How to Run the program:
+
+1. Install dependencies
+   pip install -r requirements.txt
+
+
 # Compliance
 #### robots.txt compliance
 Before scraping any data, I retrieved and reviewed the site’s robots.txt file to ensure my scraper adhered to the website’s access policies.
@@ -132,16 +138,15 @@ Each cleaned entry includes:
 ####  Date Normalization
 The helper function _normalize_date() currently returns the date unchanged unless it is missing. This placeholder exists so that future improvements (e.g., adding missing years or converting formats) can be implemented without changing the rest of the pipeline. Some dates contain the month and day but not the year. 
 
-
-
 # main.py
-### 3. Main:
+### 3. Main program description:
+The main.py file serves as the orchestrator for the entire data‑processing pipeline, coordinating the scraping, cleaning, and saving of GradCafe admissions data. It begins by starting a runtime timer, then calls scrape_data() to collect raw entries from the website while respecting the built‑in 30,000‑entry safety cap. The scraped results are saved to saved_data.json and then reloaded with load_data() to ensure the cleaning stage always operates on a stable, reproducible dataset. Next, clean_data() transforms the raw entries into a consistent, structured format suitable for downstream LLM processing and saves the cleaned output as applicant_data.json. Finally, the script prints a summary of the number of entries scraped and cleaned, along with the total runtime. 
 
-# Running the program: 
+
 
 
 ### 4. Limitations:
-
+In the applicant_data.json the comments section doesn't return a 'None' or "" and instead returns []. 
 
 
 
