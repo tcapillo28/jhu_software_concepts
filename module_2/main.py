@@ -17,7 +17,7 @@ def main():
     # 2. LOAD RAW DATA
     # -----------------------------
     print("\nLoading saved data...")
-    loaded_raw = load_data("Saved_data.json")
+    loaded_raw = load_data("saved_data.json")
 
     # -----------------------------
     # 3. CLEAN DATA
