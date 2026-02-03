@@ -8,10 +8,34 @@ This project implements a web scraper that collects recent admissions results fr
 The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
 The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
 
-# How to Run the program:
+# How to Run the Program:
+The following files will extract data from GradCafe and generate a *.json file: main.py, scrape.py, and clean.py
+1. Install dependencies: pip install -r requirements.txt
+2. Run the pipeline (from project root directory): python main.py
+3. This will generate the following files:
+   - saved_data.json - raw scraped entries
+   - applicant_data.json - cleaned, reformatted dataset
+Use applicat_data.json as the input for the LLM standardization step in llm_hosting directory
+4. Notes:
+   - The scraper includes a hard cap of 30,000 entries, regardless of how many pages you request.
+   - If GradCafe runs out of pages, the scraper stops early.
+   - The pipeline is modular, so each stage can be run independently if needed. In the file scrape.py, some functions will be moved to clean.py
 
-1. Install dependencies
-   pip install -r requirements.txt
+# Running the LLM Standardizer
+After generating applicant_data.json with the scraping and cleaning pipeline, the next step is to standardize program names and university names using a small local LLM. This stage is implemented in the llm_hosting directory and uses a lightweight GGUF model (TinyLlama) through llama-cpp-python.
+1. Install LLM dependencies: cd llm_hosting
+2. Install required packages: pip install -r requirements.txt
+- Note: On Windows, llama-cpp-python requires the Microsoft C++ Build Tools (Desktop Development with C++ workload).
+3. A) Run the LLM standardizer (from inside the llm_hosting directory): python app.py --file "applicant_data.json" --stdout > out.json
+There are test files: sample.json that can be used to test the LLM standardizer prior to applicant_data.json
+3. B) Output file:
+  - out.json - final standardized dataset
+  - canonical_programs.json — list of accepted program names
+  - canonical_universities.json — list of accepted university names
+These canonical lists can be updated and expanded to correct systematic LLM errors. I did not change these files.
+Note: 
+
+
 
 
 # Compliance
