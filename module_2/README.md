@@ -17,9 +17,11 @@ The following files will extract data from GradCafe and generate a *.json file: 
    - applicant_data.json - cleaned, reformatted dataset
 Use applicat_data.json as the input for the LLM standardization step in llm_hosting directory
 4. Notes:
-   - The scraper includes a hard cap of 30,000 entries, regardless of how many pages you request.
+   - The scraper includes a hard cap of 30,000 entries, regardless of how many pages you request. This script extracts each entry sequentially and takes a few hours to run.
    - If GradCafe runs out of pages, the scraper stops early.
-   - The pipeline is modular, so each stage can be run independently if needed. In the file scrape.py, some functions will be moved to clean.py
+   - The pipeline is modular, so each stage can be run independently if needed. In the file scrape.py, some functions will be moved to clean.py.
+   - Extracting 30,000 entries take about >24hrs. - need to modify code to make running time efficent. Or create a function when user terminates run to create an output of the entries extracted. After completed 30,000 entries PyCharm notification: the file size is 12.49MG exceeds the configured limit 2.56MG. Code insight features are not available. 
+     
 
 # Running the LLM Standardizer
 After generating applicant_data.json with the scraping and cleaning pipeline, the next step is to standardize program names and university names using a small local LLM. This stage is implemented in the llm_hosting directory and uses a lightweight GGUF model (TinyLlama) through llama-cpp-python.
@@ -33,17 +35,17 @@ There are test files: sample.json that can be used to test the LLM standardizer 
   - canonical_programs.json — list of accepted program names
   - canonical_universities.json — list of accepted university names
 These canonical lists can be updated and expanded to correct systematic LLM errors. I did not change these files.
-Note: 
 
+Systematic Edge cases in LLM output: The most prominent issue involved university names: the model frequently hallucinated institutions that did not match the original entry, such as mapping NC State University or the University of Virginia to “University of British Columbia,” or replacing Northwestern University with the placeholder “University of X.”. The model also tended to over‑generalize or simplify program names (e.g., converting “AudiologyOther” to “Audiology”), although program predictions were generally more stable than university predictions. These systematic errors should be addressed by updating the canonical university and program lists to override hallucinated or incomplete outputs and enforce consistent naming across the final dataset.
 
 
 
 # Compliance
 #### robots.txt compliance
 Before scraping any data, I retrieved and reviewed the site’s robots.txt file to ensure my scraper adhered to the website’s access policies.
-The following content-signal allow content collection for search/indexing purposes but prohibits using the data for AI model training.
+The following content signals allow content collection for search/indexing purposes but prohibit using the data for AI model training.
 This project does not use scraped data for training any AI models. Additional disallow rules apply only to specific bots or specific paths.
-This scraper does not allow any restricted path.
+This scraper does not support restricted paths.
 
 #### Explanation of notation description:
 User-agent:* applies to all general-purpose crawlers, including this scraper.
