@@ -1,24 +1,24 @@
-# Tonya Capillo
-### JHED ID:
-### Module_2: Web scrapping
-### Due Feb 1, 2026 11:59 PM EST
+# Module_2: Web scrapping 
+Tonya Capillo
+JHED ID:
+Due Feb 1, 2026 11:59 PM EST
 
 Project Overview:
 This project implements a web scraper that collects recent admissions results from The GradCafe using urllib3 and parses the data with BeautifulSoup.
 The goal is to extract structured applicant information, clean it, and output a formatted JSON dataset.
 The scraper is designed to be modular, readable, and compliant with the website’s robots.txt rules.
 
-    1. robots.txt compliance
-        Before scraping any data, I retrieved and reviewed the site’s robots.txt file to ensure that my scraper follows the website’s access policies.
-        The following content-signal allow content collection for search/indexing purposes but prohibits using the data for AI model training.
-        This project does not use scrapped data for training any AI models. Additional disallow rules apply only to specific bots or specific paths.
-        This scraper does not allow any restricted path.
+### robots.txt compliance
+Before scraping any data, I retrieved and reviewed the site’s robots.txt file to ensure that my scraper follows the website’s access policies.
+The following content-signal allow content collection for search/indexing purposes but prohibits using the data for AI model training.
+This project does not use scrapped data for training any AI models. Additional disallow rules apply only to specific bots or specific paths.
+This scraper does not allow any restricted path.
 
-        Notation description:
-        User-agent:* applies to all general-purpose crawlers, including this scraper.
-        Allow:/ explicitly permits access to all publicly available pages on the site.
+#### Explanation of notation description:
+User-agent:* applies to all general-purpose crawlers, including this scraper.
+Allow:/ explicitly permits access to all publicly available pages on the site.
 
-            I used urllib3 to fetch the file programmatically:
+#### Code use to fetch robots.txt
 
                 import urllib3
 
@@ -30,15 +30,17 @@ The scraper is designed to be modular, readable, and compliant with the website�
                     print(robots)
                     return robots
 
-            The file returned:
-                User-agent: *
-                Content-Signal: search=yes, ai-train=no
-                Allow: /
+                The file returned:
+                    User-agent: *
+                    Content-Signal: search=yes, ai-train=no
+                    Allow: /
 
 
-    2. Scrapper Description:
-    3. Clean Description:
-    4. Limitations:
+### 2. Scrapper Description:
+
+### 3. Clean Description:
+
+### 4. Limitations:
 
 
 
