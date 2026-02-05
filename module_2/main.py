@@ -4,6 +4,7 @@ from clean import load_data, clean_data
 
 
 def main():
+
     start_time = time.time()
 
     # -----------------------------

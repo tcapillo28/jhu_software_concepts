@@ -39,9 +39,10 @@ def clean_data(raw_entries):
 
 # ============================================================
 # PRIVATE HELPERS
+# placeholder for future formatting - might want to include 2026 for entries of this year
 # ============================================================
 
 def _normalize_date(date_str):
     if not date_str:
         return None
-    return date_str  # placeholder for future formatting - might want to include 2026 for entries of this year
+    return date_str
