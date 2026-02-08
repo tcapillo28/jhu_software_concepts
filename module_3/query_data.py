@@ -14,20 +14,26 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 
+# -------------------------------------------------------------------------------------------------------
+#   Questions 1:
+# -------------------------------------------------------------------------------------------------------
+
 """
-Inspect available terms
+Inspect available terms and total entries for each term
 """
-# Show distinct terms (to demonstrate data validation) with out having to use SQL shell
-print("\n--- Distinct Terms in Dataset ---")
-q_terms = """
-SELECT DISTINCT term
+
+
+print("\n--- Number of entries for each term---")
+q_all_terms = """
+SELECT DISTINCT term, COUNT(*) AS num_entries
 FROM applicants
+GROUP BY term
 ORDER BY term;
 """
-cur.execute(q_terms)
-terms = cur.fetchall()
-for t in terms:
-    print(t[0])
+cur.execute(q_all_terms)
+rows = cur.fetchall()
+for term, count in rows:
+    print(f"{term}: {count}")
 
 
 
@@ -42,7 +48,12 @@ WHERE term = 'Fall 2025';
 
 
 cur.execute(q1)
-print("1. Number of Fall 2025 applicants:", cur.fetchone()[0])
+print("Question 1. Number of Fall 2025 applicants:", cur.fetchone()[0])
+
+
+
+
+
 
 cur.close()
 conn.close()
