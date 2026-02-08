@@ -56,7 +56,7 @@ def load_data(json_path):
     cur = conn.cursor()
 
     # 2. Load JSON file
-    with open(json_path, "r", encoding="utf-8") as f:
+    with open(json_path, "r", encoding="utf-16") as f:
         data = [json.loads(line) for line in f]  # your file is line-delimited JSON
 
     # 3. Insert each row
@@ -106,4 +106,4 @@ def load_data(json_path):
 
 
 if __name__ == "__main__":
-    load_data(r"C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_3\llm_extend_applicant_data.json")
+    load_data(r"C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_2\llm_extend_applicant_data.json")
