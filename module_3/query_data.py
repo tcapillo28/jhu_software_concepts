@@ -122,10 +122,10 @@ Question 3: What is the average GPA, GRE, GRE V, GRE AW of applicants who provid
 print("\n Question 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):")
 q3 = """
 SELECT
-    ROUND(AVG(gpa), 2) AS avg_gpa,
-    ROUND(AVG(gre), 2) AS avg_gre,
-    ROUND(AVG(gre_v), 2) AS avg_gre_v,
-    ROUND(AVG(gre_aw), 2) AS avg_gre_aw
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa,
+    ROUND(AVG(gre)::numeric, 2) AS avg_gre,
+    ROUND(AVG(gre_v)::numeric, 2) AS avg_gre_v,
+    ROUND(AVG(gre_aw)::numeric, 2) AS avg_gre_aw
 FROM applicants;
 """
 cur.execute(q3)
