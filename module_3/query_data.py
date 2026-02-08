@@ -164,5 +164,28 @@ print(f"\nQuestion 4: Average GPA of American students in Fall 2025): {avg_gpa_a
 Question 5: What percent of entries for Fall 2025 are Acceptances (to two decimal places)?
 '''
 
+q5 = """
+SELECT 
+    ROUND(
+        (SUM(CASE WHEN status = 'Accepted' THEN 1 ELSE 0 END)::numeric 
+        / COUNT(*) * 100)
+    , 2) AS pct_accepted_fall2025
+FROM applicants
+WHERE term = 'Fall 2025';
+"""
+cur.execute(q5)
+pct_accepted_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 5. Percent of Fall 2025 entries that are Acceptances: {pct_accepted_fall2025}%")
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 6:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 6: What is the average GPA of applicants who applied for Fall 2025 who are Acceptances?
+'''
+
+
+
 cur.close()
 conn.close()
