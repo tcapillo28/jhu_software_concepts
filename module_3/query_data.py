@@ -185,7 +185,46 @@ print(f"\nQuestion 5. Percent of Fall 2025 entries that are Acceptances: {pct_ac
 Question 6: What is the average GPA of applicants who applied for Fall 2025 who are Acceptances?
 '''
 
+q6 = """
+SELECT
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa_accepted_fall2025
+FROM applicants
+WHERE term = 'Fall 2025'
+  AND status = 'Accepted';
+"""
+cur.execute(q6)
+avg_gpa_accepted_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 6. Average GPA of Accepted applicants in Fall 2025: {avg_gpa_accepted_fall2025}")
 
 
+# -------------------------------------------------------------------------------------------------------
+#   Questions 7:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 7: How many entries are from applicants who applied to JHU for a master's degrees in Computer Science?
+'''
+# Filter on llm_generated_university, degree and llm_generated_program
+
+q7 = """
+SELECT COUNT(*) AS jhu_cs_masters_count
+FROM applicants
+WHERE llm_generated_university = 'Johns Hopkins University'
+  AND degree = 'Masters'
+  AND llm_generated_program = 'Computer Science';
+"""
+cur.execute(q7)
+jhu_cs_masters_count = cur.fetchone()[0]
+print(f"\nQuestion 7. Number of JHU Master's in Computer Science applicants: {jhu_cs_masters_count}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 8:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 8: How many entries from 2025 are acceptances from applicants who applied to Georgetown University, MIT, Stanford University, or Carnegie Mellon University for a PhD in Computer Science?
+'''
+# Filter
 cur.close()
 conn.close()
