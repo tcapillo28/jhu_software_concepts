@@ -309,7 +309,25 @@ print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanfo
 '''
 Question 9: Do you numbers for question 8 change if you use LLM Generated Fields (rather than your downloaded fields)?
 '''
-# Filter on
+
+# Non LLM generated fields
+q8 = """
+SELECT COUNT(*) AS accepted_2025_top4_phd_cs_nonLLM
+FROM applicants
+WHERE term LIKE '%2025'
+  AND status = 'Accepted'
+  AND degree = 'PhD'
+  AND program = 'Computer Science'
+  AND program IN (
+        'Georgetown University',
+        'Massachusetts Institute of Technology',
+        'Stanford University',
+        'Carnegie Mellon University'
+  );
+"""
+cur.execute(q8)
+accepted_2025_top4_phd_cs_nonLLM = cur.fetchone()[0]
+print(f"\n Non LLM generated field: {accepted_2025_top4_phd_cs_nonLLM}")
 
 cur.close()
 conn.close()
