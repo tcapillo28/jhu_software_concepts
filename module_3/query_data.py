@@ -245,19 +245,62 @@ cur.execute(q8)
 accepted_2025_top4_phd_cs = cur.fetchone()[0]
 print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanford, or CMU: {accepted_2025_top4_phd_cs}")
 
-# I realized I didn't check the spelling of LLM generated uni and program
-print("\nA. Distinct LLM‑generated universities:")
-qA = """
-SELECT DISTINCT llm_generated_university
-FROM applicants
-ORDER BY llm_generated_university;
-"""
-cur.execute(qA)
-universities = cur.fetchall()
-for u in universities:
-    print(u[0])
 
 
+# ## I realized I didn't check the spelling of LLM generated uni and program
+# print("\nA. Distinct LLM‑generated universities:")
+#
+# qA = """
+# SELECT DISTINCT llm_generated_university
+# FROM applicants
+# ORDER BY llm_generated_university;
+# """
+# cur.execute(qA)
+# universities = cur.fetchall()
+#
+# # # Print to console
+# # for u in universities:
+# #     print(u[0])
+#
+# # Write to text file
+# with open("distinct_universities.txt", "w", encoding="utf-8") as f:
+#     f.write("Distinct LLM‑generated universities:\n")
+#     for u in universities:
+#         f.write(f"{u[0]}\n")
+
+## print("\nC. Distinct degree types:")
+# qC = """
+# SELECT DISTINCT degree
+# FROM applicants
+# ORDER BY degree;
+# """
+# cur.execute(qC)
+# degrees = cur.fetchall()
+# for d in degrees:
+#     print(d[0])
+
+## output distinct degree type are clean:
+# EdD
+# IND
+# JD
+# Masters
+# MBA
+# MFA
+# Other
+# PhD
+# PsyD
+
+# # Distinct erms are clean
+# print("\nD. Distinct terms:")
+# qD = """
+# SELECT DISTINCT term
+# FROM applicants
+# ORDER BY term;
+# """
+# cur.execute(qD)
+# terms = cur.fetchall()
+# for t in terms:
+#     print(t[0])
 
 # -------------------------------------------------------------------------------------------------------
 #   Questions 9:
