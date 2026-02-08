@@ -119,7 +119,7 @@ print(f"GRE AW provided: {gre_aw_count}")
 """
 Question 3: What is the average GPA, GRE, GRE V, GRE AW of applicants who provide these metrics?
 """
-print("\n Question 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):")
+print("\nQuestion 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):")
 q3 = """
 SELECT
     ROUND(AVG(gpa)::numeric, 2) AS avg_gpa,
