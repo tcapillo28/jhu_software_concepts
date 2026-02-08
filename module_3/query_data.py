@@ -136,5 +136,33 @@ print(f"Average GRE Verbal: {avg_gre_v}")
 print(f"Average GRE AW: {avg_gre_aw}")
 
 
+# -------------------------------------------------------------------------------------------------------
+#   Questions 4:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 4: What is their average GPA of American students in Fall 2025?
+'''
+
+q4 = """
+SELECT
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa_american_fall2025
+FROM applicants
+WHERE us_or_international = 'American'
+  AND term = 'Fall 2025';
+"""
+cur.execute(q4)
+avg_gpa_american_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 4: Average GPA of American students in Fall 2025): {avg_gpa_american_fall2025}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 5:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 5: What percent of entries for Fall 2025 are Acceptances (to two decimal places)?
+'''
+
 cur.close()
 conn.close()
