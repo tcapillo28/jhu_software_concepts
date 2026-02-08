@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------------
 # Script created using llm_extend_applicant_data.json from Liv.
 # Using Windows psycopg2
+# To change the input file. Go to bottom of this file in main and insert the full file path
 # ___________________________________________________________________________________
 
 import json
