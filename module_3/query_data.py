@@ -15,7 +15,24 @@ cur = conn.cursor()
 
 
 """
-How many entries do you have in your database who have applied for Fall 2025?
+Inspect available terms
+"""
+# Show distinct terms (to demonstrate data validation) with out having to use SQL shell
+print("\n--- Distinct Terms in Dataset ---")
+q_terms = """
+SELECT DISTINCT term
+FROM applicants
+ORDER BY term;
+"""
+cur.execute(q_terms)
+terms = cur.fetchall()
+for t in terms:
+    print(t[0])
+
+
+
+"""
+QUESTION 1: How many entries do you have in your database who have applied for Fall 2025?
 """
 q1 = """
 SELECT COUNT(*)
