@@ -1,8 +1,7 @@
 # -----------------------------------------------------------------------------------
-# Script was creating using llm_extend_applicant_data.json from Liv.
+# Script created using llm_extend_applicant_data.json from Liv.
 # Using Windows psycopg2
 # ___________________________________________________________________________________
-
 
 import json
 import psycopg2
@@ -25,10 +24,10 @@ def clean_float(value):
         return float(match.group(1))
     return None
 
+
 def clean_date(date_str):
     """
-    Converts dates like 'January 31, 2026' into YYYY-MM-DD format
-    (PostgreSQL required format YYYY-MM-DD)
+    Converts dates like 'January 31, 2026' into YYYY-MM-DD format.
     Returns None if the date is missing or invalid.
     """
     if not date_str:
@@ -39,12 +38,18 @@ def clean_date(date_str):
         return None
 
 
+def strip_nul(value):
+    """Remove NUL bytes from strings."""
+    if isinstance(value, str):
+        return value.replace("\x00", "")
+    return value
+
+
 def load_data(json_path):
     """
-    Opens the database, reads cleaned llm_extended_applicant_data.json and
-    inserts every record and saves the data into the applicants table in PostgreSQL.
-    Then closes the connection.
+    Opens the database, reads cleaned JSON, inserts every record into PostgreSQL.
     """
+
     # 1. Connect to PostgreSQL
     conn = psycopg2.connect(
         dbname="gradcafe",
@@ -55,9 +60,17 @@ def load_data(json_path):
     )
     cur = conn.cursor()
 
-    # 2. Load JSON file
-    with open(json_path, "r", encoding="utf-16") as f:
-        data = [json.loads(line) for line in f]  # your file is line-delimited JSON
+    # 2. Load JSON file safely (handles NUL bytes and unknown encodings)
+    clean_lines = []
+    with open(json_path, "rb") as f:
+        for raw_line in f:
+            raw_line = raw_line.replace(b"\x00", b"")  # remove NUL bytes
+            line = raw_line.decode("utf-8", errors="ignore").strip()
+            if line:
+                clean_lines.append(line)
+
+    # Parse each JSON object (line-delimited JSON)
+    data = [json.loads(line) for line in clean_lines]
 
     # 3. Insert each row
     for row in data:
@@ -82,20 +95,20 @@ def load_data(json_path):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
-                row.get("program"),
-                row.get("comments"),
-                clean_date(row.get("date_added")),
-                row.get("url"),
-                row.get("applicant_status"),
-                row.get("semester_year_start"),
-                row.get("citizenship"),
-                clean_float(row.get("gpa")),
-                clean_float(row.get("gre")),
-                clean_float(row.get("gre_v")),
-                clean_float(row.get("gre_aw")),
-                row.get("masters_or_phd"),
-                row.get("llm-generated-program"),
-                row.get("llm-generated-university")
+                strip_nul(row.get("program")),
+                strip_nul(row.get("comments")),
+                clean_date(strip_nul(row.get("date_added"))),
+                strip_nul(row.get("url")),
+                strip_nul(row.get("applicant_status")),
+                strip_nul(row.get("semester_year_start")),
+                strip_nul(row.get("citizenship")),
+                clean_float(strip_nul(row.get("gpa"))),
+                clean_float(strip_nul(row.get("gre"))),
+                clean_float(strip_nul(row.get("gre_v"))),
+                clean_float(strip_nul(row.get("gre_aw"))),
+                strip_nul(row.get("masters_or_phd")),
+                strip_nul(row.get("llm-generated-program")),
+                strip_nul(row.get("llm-generated-university"))
             )
         )
 
@@ -106,4 +119,4 @@ def load_data(json_path):
 
 
 if __name__ == "__main__":
-    load_data(r"C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_2\llm_extend_applicant_data.json")
+    load_data(r"C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_3\llm_extend_applicant_data_Provided.json")
