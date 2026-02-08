@@ -225,6 +225,48 @@ print(f"\nQuestion 7. Number of JHU Master's in Computer Science applicants: {jh
 '''
 Question 8: How many entries from 2025 are acceptances from applicants who applied to Georgetown University, MIT, Stanford University, or Carnegie Mellon University for a PhD in Computer Science?
 '''
-# Filter
+# Filter on term (%2025), status = accepted,  llm_generated_university, degree = PhD,  llm_generated_program = computer science
+
+q8 = """
+SELECT COUNT(*) AS accepted_2025_top4_phd_cs
+FROM applicants
+WHERE term LIKE '%2025'
+  AND status = 'Accepted'
+  AND degree = 'PhD'
+  AND llm_generated_program = 'Computer Science'
+  AND llm_generated_university IN (
+        'Georgetown University',
+        'Massachusetts Institute of Technology',
+        'Stanford University',
+        'Carnegie Mellon University'
+  );
+"""
+cur.execute(q8)
+accepted_2025_top4_phd_cs = cur.fetchone()[0]
+print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanford, or CMU: {accepted_2025_top4_phd_cs}")
+
+# I realized I didn't check the spelling of LLM generated uni and program
+print("\nA. Distinct LLM‑generated universities:")
+qA = """
+SELECT DISTINCT llm_generated_university
+FROM applicants
+ORDER BY llm_generated_university;
+"""
+cur.execute(qA)
+universities = cur.fetchall()
+for u in universities:
+    print(u[0])
+
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 9:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 9: Do you numbers for question 8 change if you use LLM Generated Fields (rather than your downloaded fields)?
+'''
+# Filter on
+
 cur.close()
 conn.close()
