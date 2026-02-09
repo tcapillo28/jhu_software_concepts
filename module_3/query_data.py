@@ -18,9 +18,6 @@ cur = conn.cursor()
 #   Questions 1:
 # -------------------------------------------------------------------------------------------------------
 
-
-
-
 """
 QUESTION 1: How many entries do you have in your database who have applied for Fall 2025?
 """
@@ -35,10 +32,10 @@ cur.execute(q1)
 print("\nQuestion 1. Number of Fall 2025 applicants:", cur.fetchone()[0])
 
 """
-Inspect available terms and total entries for each term
+Inspect available terms and total entries/applicants for each term
 """
 
-print("\n--- What are the number of entries for each term? ---")
+print("\n--- What are the number of entries/applicants for each term? ---")
 q_all_terms = """
 SELECT DISTINCT term, COUNT(*) AS num_entries
 FROM applicants
