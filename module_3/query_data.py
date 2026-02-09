@@ -225,7 +225,7 @@ print(f"\nQuestion 7. Number of JHU Master's in Computer Science applicants: {jh
 '''
 Question 8: How many entries from 2025 are acceptances from applicants who applied to Georgetown University, MIT, Stanford University, or Carnegie Mellon University for a PhD in Computer Science?
 '''
-# Filter on term (%2025), status = accepted,  llm_generated_university, degree = PhD,  llm_generated_program = computer science
+# Filter on term (LIKE '%2025'), status = accepted,  llm_generated_university, degree = PhD,  llm_generated_program = computer science
 
 q8 = """
 SELECT COUNT(*) AS accepted_2025_top4_phd_cs
@@ -233,17 +233,18 @@ FROM applicants
 WHERE term LIKE '%2025'
   AND status = 'Accepted'
   AND degree = 'PhD'
-  AND llm_generated_program = 'Computer Science'
-  AND llm_generated_university IN (
-        'Georgetown University',
-        'Massachusetts Institute of Technology',
-        'Stanford University',
-        'Carnegie Mellon University'
-  );
+  AND llm_generated_program LIKE 'Computer Science' 
+  AND llm_generated_university LIKE ANY (ARRAY[
+        '%Georgetown University%',
+        '%Massachusetts Institute of Technology%',
+        '%Stanford University%',
+        '%Carnegie Mellon University%'
+
+  ]);
 """
 cur.execute(q8)
 accepted_2025_top4_phd_cs = cur.fetchone()[0]
-print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanford, or CMU: {accepted_2025_top4_phd_cs}")
+print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown University, Massachusetts Institute of Technology, Stanford Unviersity, or Carnegie Mellon University (using LLM generated values): {accepted_2025_top4_phd_cs}")
 
 
 
@@ -309,25 +310,35 @@ print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanfo
 '''
 Question 9: Do you numbers for question 8 change if you use LLM Generated Fields (rather than your downloaded fields)?
 '''
+# We cannot separate university + program cleanly,
+# so we match using substring patterns, ILIKE is case-sensitive and will match all of the case variations when the word appears
+# it does not included abbreviations or misspellings
 
-# Non LLM generated fields
-q8 = """
-SELECT COUNT(*) AS accepted_2025_top4_phd_cs_nonLLM
+q9_raw = """
+SELECT COUNT(*) AS raw_accepted_2025_top4_phd_cs
 FROM applicants
 WHERE term LIKE '%2025'
   AND status = 'Accepted'
   AND degree = 'PhD'
-  AND program = 'Computer Science'
-  AND program IN (
-        'Georgetown University',
-        'Massachusetts Institute of Technology',
-        'Stanford University',
-        'Carnegie Mellon University'
+  AND program ILIKE '%Computer%'
+  AND (
+        program ILIKE '%Georgetown%'
+     OR program ILIKE '%MIT%'
+     OR program ILIKE '%Massachusetts Institute of Technology%'
+     OR program ILIKE '%Stanford%'
+     OR program ILIKE '%Carnegie Mellon%'
   );
 """
-cur.execute(q8)
-accepted_2025_top4_phd_cs_nonLLM = cur.fetchone()[0]
-print(f"\n Non LLM generated field: {accepted_2025_top4_phd_cs_nonLLM}")
+
+cur.execute(q9_raw)
+raw_result = cur.fetchone()[0]
+
+print(f"\nQuestion 9 result: Accepted 2025 PhD CS applicants to Georgetown University, Massachusetts Institute of Technology, Stanford Unviersity, or Carnegie Mellon University (using downloaded fields values): {raw_result}")
+
+print("\n=== INTERPRETATION FOR QUESTION 9 ===")
+print("Compare the two numbers above. If they differ, explain that the raw program field is messy,")
+print("contains both university + department in inconsistent formats, and therefore produces different counts")
+print("than the standardized LLM‑generated fields.")
 
 cur.close()
 conn.close()
