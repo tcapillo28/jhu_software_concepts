@@ -1,0 +1,332 @@
+import io
+import sys
+import psycopg2
+
+def get_full_output():
+    buffer = io.StringIO()
+    original_stdout = sys.stdout
+    sys.stdout = buffer
+
+
+"""
+Connect to PostgreSQL database
+
+"""
+conn = psycopg2.connect(
+    dbname="gradcafe",
+    user="postgres",
+    password="2828",
+    host="localhost",
+    port=5432
+)
+cur = conn.cursor()
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 1:
+# -------------------------------------------------------------------------------------------------------
+
+"""
+QUESTION 1: How many entries do you have in your database who have applied for Fall 2025?
+"""
+q1 = """
+SELECT COUNT(*)
+FROM applicants
+WHERE term = 'Fall 2025';
+"""
+
+cur.execute(q1)
+print("\nQuestion 1. Number of Fall 2025 applicants:", cur.fetchone()[0])
+
+"""
+Inspect available terms and total entries/applicants for each term
+"""
+
+print("\n--- What are the number of entries/applicants for each term? ---")
+q_all_terms = """
+SELECT DISTINCT term, COUNT(*) AS num_entries
+FROM applicants
+GROUP BY term
+ORDER BY term;
+"""
+cur.execute(q_all_terms)
+rows = cur.fetchall()
+for term, count in rows:
+    print(f"{term}: {count}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 2:
+# -------------------------------------------------------------------------------------------------------
+
+
+
+
+"""
+Question 2: What percentage of entries are from international students (not American or Other) (to two decimal places)?
+"""
+
+q2 = """
+SELECT 
+    ROUND(
+        (SUM(CASE WHEN us_or_international = 'International' THEN 1 ELSE 0 END)::numeric 
+        / COUNT(*) * 100)
+    , 2) AS pct_international
+FROM applicants;
+"""
+cur.execute(q2)
+print("\nQuestions 2. Percentage of entries from international students:",str(cur.fetchone()[0]) + "%")
+
+"""
+What are the distinct citizenship categories?
+"""
+
+print("\n--- What are the total entries by citizenship category? ---")
+q_cit_counts = """
+SELECT 
+    us_or_international,
+    COUNT(*) AS total_entries
+FROM applicants
+GROUP BY us_or_international
+ORDER BY us_or_international;
+"""
+cur.execute(q_cit_counts)
+rows = cur.fetchall()
+for category, total in rows:
+    print(f"{category}: {total}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 3:
+# -------------------------------------------------------------------------------------------------------
+
+"""
+Question 3: What is the average GPA, GRE, GRE V, GRE AW of applicants who provide these metrics?
+"""
+print("\nQuestion 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):")
+q3 = """
+SELECT
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa,
+    ROUND(AVG(gre)::numeric, 2) AS avg_gre,
+    ROUND(AVG(gre_v)::numeric, 2) AS avg_gre_v,
+    ROUND(AVG(gre_aw)::numeric, 2) AS avg_gre_aw
+FROM applicants;
+"""
+cur.execute(q3)
+avg_gpa, avg_gre, avg_gre_v, avg_gre_aw = cur.fetchone()
+print(f"Average GPA: {avg_gpa}")
+print(f"Average GRE Total: {avg_gre}")
+print(f"Average GRE Verbal: {avg_gre_v}")
+print(f"Average GRE AW: {avg_gre_aw}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 4:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 4: What is their average GPA of American students in Fall 2025?
+'''
+
+q4 = """
+SELECT
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa_american_fall2025
+FROM applicants
+WHERE us_or_international = 'American'
+  AND term = 'Fall 2025';
+"""
+cur.execute(q4)
+avg_gpa_american_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 4: Average GPA of American students in Fall 2025): {avg_gpa_american_fall2025}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 5:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 5: What percent of entries for Fall 2025 are Acceptances (to two decimal places)?
+'''
+
+q5 = """
+SELECT 
+    ROUND(
+        (SUM(CASE WHEN status = 'Accepted' THEN 1 ELSE 0 END)::numeric 
+        / COUNT(*) * 100)
+    , 2) AS pct_accepted_fall2025
+FROM applicants
+WHERE term = 'Fall 2025';
+"""
+cur.execute(q5)
+pct_accepted_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 5. Percent of Fall 2025 entries that are Acceptances: {pct_accepted_fall2025}%")
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 6:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 6: What is the average GPA of applicants who applied for Fall 2025 who are Acceptances?
+'''
+
+q6 = """
+SELECT
+    ROUND(AVG(gpa)::numeric, 2) AS avg_gpa_accepted_fall2025
+FROM applicants
+WHERE term = 'Fall 2025'
+  AND status = 'Accepted';
+"""
+cur.execute(q6)
+avg_gpa_accepted_fall2025 = cur.fetchone()[0]
+print(f"\nQuestion 6. Average GPA of Accepted applicants in Fall 2025: {avg_gpa_accepted_fall2025}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 7:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 7: How many entries are from applicants who applied to JHU for a master's degrees in Computer Science?
+'''
+# Filter on llm_generated_university, degree and llm_generated_program
+
+q7 = """
+SELECT COUNT(*) AS jhu_cs_masters_count
+FROM applicants
+WHERE llm_generated_university = 'Johns Hopkins University'
+  AND degree = 'Masters'
+  AND llm_generated_program = 'Computer Science';
+"""
+cur.execute(q7)
+jhu_cs_masters_count = cur.fetchone()[0]
+print(f"\nQuestion 7. Number of JHU Master's in Computer Science applicants: {jhu_cs_masters_count}")
+
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 8:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 8: How many entries from 2025 are acceptances from applicants who applied to Georgetown University, MIT, Stanford University, or Carnegie Mellon University for a PhD in Computer Science?
+'''
+# Filter on term (LIKE '%2025'), status = accepted,  llm_generated_university, degree = PhD,  llm_generated_program = computer science
+
+q8 = """
+SELECT COUNT(*) AS accepted_2025_top4_phd_cs
+FROM applicants
+WHERE term LIKE '%2025'
+  AND status = 'Accepted'
+  AND degree = 'PhD'
+  AND llm_generated_program LIKE 'Computer Science' 
+  AND llm_generated_university LIKE ANY (ARRAY[
+        '%Georgetown%',
+        '%Massachusetts Institute of Technology%',
+        '%MIT%',
+        '%Stanford%',
+        '%Carnegie Mellon%'
+
+  ]);
+"""
+cur.execute(q8)
+accepted_2025_top4_phd_cs = cur.fetchone()[0]
+print(f"\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown University, Massachusetts Institute of Technology, Stanford Unviersity, or Carnegie Mellon University (using LLM generated values): {accepted_2025_top4_phd_cs}")
+
+
+
+# ## I realized I didn't check the spelling of LLM generated uni and program
+# print("\nA. Distinct LLM‑generated universities:")
+#
+# qA = """
+# SELECT DISTINCT llm_generated_university
+# FROM applicants
+# ORDER BY llm_generated_university;
+# """
+# cur.execute(qA)
+# universities = cur.fetchall()
+#
+# # # Print to console
+# # for u in universities:
+# #     print(u[0])
+#
+# # Write to text file
+# with open("distinct_universities.txt", "w", encoding="utf-8") as f:
+#     f.write("Distinct LLM‑generated universities:\n")
+#     for u in universities:
+#         f.write(f"{u[0]}\n")
+
+## print("\nC. Distinct degree types:")
+# qC = """
+# SELECT DISTINCT degree
+# FROM applicants
+# ORDER BY degree;
+# """
+# cur.execute(qC)
+# degrees = cur.fetchall()
+# for d in degrees:
+#     print(d[0])
+
+## output distinct degree type are clean:
+# EdD
+# IND
+# JD
+# Masters
+# MBA
+# MFA
+# Other
+# PhD
+# PsyD
+
+# # Distinct erms are clean
+# print("\nD. Distinct terms:")
+# qD = """
+# SELECT DISTINCT term
+# FROM applicants
+# ORDER BY term;
+# """
+# cur.execute(qD)
+# terms = cur.fetchall()
+# for t in terms:
+#     print(t[0])
+
+# -------------------------------------------------------------------------------------------------------
+#   Questions 9:
+# -------------------------------------------------------------------------------------------------------
+
+'''
+Question 9: Do you numbers for question 8 change if you use LLM Generated Fields (rather than your downloaded fields)?
+'''
+# We cannot separate university + program cleanly,
+# so we match using substring patterns, ILIKE is case-sensitive and will match all of the case variations when the word appears
+# it does not included abbreviations or misspellings
+
+q9_raw = """
+SELECT COUNT(*) AS raw_accepted_2025_top4_phd_cs
+FROM applicants
+WHERE term LIKE '%2025'
+  AND status = 'Accepted'
+  AND degree = 'PhD'
+  AND program ILIKE '%Computer%'
+  AND (
+        program ILIKE '%Georgetown%'
+     OR program ILIKE '%MIT%'
+     OR program ILIKE '%Massachusetts Institute of Technology%'
+     OR program ILIKE '%Stanford%'
+     OR program ILIKE '%Carnegie Mellon%'
+  );
+"""
+
+cur.execute(q9_raw)
+raw_result = cur.fetchone()[0]
+
+print(f"\nQuestion 9 result: Accepted 2025 PhD CS applicants to Georgetown University, Massachusetts Institute of Technology, Stanford Unviersity, or Carnegie Mellon University (using downloaded fields values): {raw_result}")
+
+print("\n=== INTERPRETATION FOR QUESTION 9 ===")
+print("Using the LLM‑generated fields (Question 8), I found 11 accepted 2025 PhD Computer Science applicants to the four target universities. Using the raw scraped fields with substring matching (Question 9), the count increased to 25. "
+      "\nThis difference occurs because the raw program field is significantly noisier and contains inconsistent formatting, abbreviations, and concatenated text. When using ILIKE with broad substrings (e.g., “%Computer%”, “%MIT%”), "
+      "\nmany additional entries are matched that would not be considered true Computer Science PhD applications. The LLM‑generated fields are more standardized, so the filtering is more precise and produces a lower, more accurate count.")
+
+cur.close()
+conn.close()
+
+    sys.stdout = original_stdout
+    return buffer.getvalue()
