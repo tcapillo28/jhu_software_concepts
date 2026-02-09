@@ -14,7 +14,12 @@ Together, these scripts demonstrate the full workflow of:
 
 
 # Running the program:
-## Creating database and querying data: 
+- In terminal run:  python app.py
+- Then click link  http://127.0.0.1:8080 
+The webpage displays all the answer from the homework assignment 1-9 including additional questions 1.A) and 2.A).
+
+
+# Part 1. Creating database and querying data: 
 First connect to database and run load_Data.py followed by query_data.py
 1. Database Connection Details
 Both load_data.py and query_data.py connect to the same PostgreSQL database using the following parameters:
@@ -41,10 +46,49 @@ Run the script from PyCharm or command line: python query_data.py
 - Connects to the same gradcafe database
 - Runs each SQL query (Questions 1–9) and a few additional questions
 
-Include: did not review shared input file to make sure the spelling of program and 
+Note: The ouput from the query_data.py will not return an output in the terminal. I changed it to be displayed in the Flask webpage.
 
-## Flask Webpage
+## Part2. Flask Webpage
+The Flask dashboard will display the query data from query_data.py and  includes two buttons for scraping and analyzing Gradcafe data.
+This portion requires the following files: app.py, scrape.py,index.html, style.css, and query_data.py.
 
+1. app.py
+The main Flask application.
+- Defines all routes (/, /pull_data, /update_analysis)
+- Manages background scraping threads
+- Prevents overlapping operations using a global scrape_running flag
+- Passes analysis results to the HTML template
+
+2. scrape.py
+Handles data scraping and duplicate filtering.
+- Fetches the newest GradCafe entries
+- Normalizes scraped fields
+- Compares entries against saved_data.json
+- Saves only new entries to avoid duplication
+
+3. query_data.py
+Generates the analysis tiles displayed on the dashboard.
+- Reads stored GradCafe entries
+- Computes all analytical results (Questions 1–9)
+- Returns a structured list of tiles for rendering
+
+4. templates/index.html
+The main webpage layout.
+- Displays the analysis tiles
+- Contains the “Pull Data” and “Update Analysis” buttons
+- Includes user‑friendly descriptions for each button
+
+5. static/style.css
+Styles the dashboard.
+- Positions the buttons in the top‑right corner
+- Formats the analysis tiles
+- Controls spacing, fonts, and layout
+
+6. saved_data.json
+Local storage for scraped GradCafe entries.
+- Updated each time the scraper runs
+- Used as the data source for all analysis
+- Note: should have used this to reference back if the following entries from pull data button where the same as the new entries.
 
 
 # Limitations
