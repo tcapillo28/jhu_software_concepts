@@ -18,21 +18,6 @@ cur = conn.cursor()
 #   Questions 1:
 # -------------------------------------------------------------------------------------------------------
 
-"""
-Inspect available terms and total entries for each term
-"""
-
-print("\n--- Number of entries for each term---")
-q_all_terms = """
-SELECT DISTINCT term, COUNT(*) AS num_entries
-FROM applicants
-GROUP BY term
-ORDER BY term;
-"""
-cur.execute(q_all_terms)
-rows = cur.fetchall()
-for term, count in rows:
-    print(f"{term}: {count}")
 
 
 
@@ -49,29 +34,28 @@ WHERE term = 'Fall 2025';
 cur.execute(q1)
 print("\nQuestion 1. Number of Fall 2025 applicants:", cur.fetchone()[0])
 
+"""
+Inspect available terms and total entries for each term
+"""
+
+print("\n--- What are the number of entries for each term? ---")
+q_all_terms = """
+SELECT DISTINCT term, COUNT(*) AS num_entries
+FROM applicants
+GROUP BY term
+ORDER BY term;
+"""
+cur.execute(q_all_terms)
+rows = cur.fetchall()
+for term, count in rows:
+    print(f"{term}: {count}")
+
 
 # -------------------------------------------------------------------------------------------------------
 #   Questions 2:
 # -------------------------------------------------------------------------------------------------------
 
 
-"""
-What are the distinct citizenship categories?
-"""
-
-print("\n--- Total entries by citizenship category ---")
-q_cit_counts = """
-SELECT 
-    us_or_international,
-    COUNT(*) AS total_entries
-FROM applicants
-GROUP BY us_or_international
-ORDER BY us_or_international;
-"""
-cur.execute(q_cit_counts)
-rows = cur.fetchall()
-for category, total in rows:
-    print(f"{category}: {total}")
 
 
 """
@@ -89,32 +73,28 @@ FROM applicants;
 cur.execute(q2)
 print("\nQuestions 2. Percentage of entries from international students:",str(cur.fetchone()[0]) + "%")
 
+"""
+What are the distinct citizenship categories?
+"""
+
+print("\n--- What are the total entries by citizenship category? ---")
+q_cit_counts = """
+SELECT 
+    us_or_international,
+    COUNT(*) AS total_entries
+FROM applicants
+GROUP BY us_or_international
+ORDER BY us_or_international;
+"""
+cur.execute(q_cit_counts)
+rows = cur.fetchall()
+for category, total in rows:
+    print(f"{category}: {total}")
 
 
 # -------------------------------------------------------------------------------------------------------
 #   Questions 3:
 # -------------------------------------------------------------------------------------------------------
-
-'''
-How many entries report their GPA, GRE, GRE V and GRE AW
-'''
-
-print("\n--- Number of applicants who provided each metric ---")
-q3_counts = """
-SELECT
-    COUNT(gpa) AS gpa_count,
-    COUNT(gre) AS gre_count,
-    COUNT(gre_v) AS gre_v_count,
-    COUNT(gre_aw) AS gre_aw_count
-FROM applicants;
-"""
-cur.execute(q3_counts)
-gpa_count, gre_count, gre_v_count, gre_aw_count = cur.fetchone()
-print(f"GPA provided: {gpa_count}")
-print(f"GRE provided: {gre_count}")
-print(f"GRE V provided: {gre_v_count}")
-print(f"GRE AW provided: {gre_aw_count}")
-
 
 """
 Question 3: What is the average GPA, GRE, GRE V, GRE AW of applicants who provide these metrics?
@@ -235,10 +215,11 @@ WHERE term LIKE '%2025'
   AND degree = 'PhD'
   AND llm_generated_program LIKE 'Computer Science' 
   AND llm_generated_university LIKE ANY (ARRAY[
-        '%Georgetown University%',
+        '%Georgetown%',
         '%Massachusetts Institute of Technology%',
-        '%Stanford University%',
-        '%Carnegie Mellon University%'
+        '%MIT%',
+        '%Stanford%',
+        '%Carnegie Mellon%'
 
   ]);
 """
@@ -336,9 +317,9 @@ raw_result = cur.fetchone()[0]
 print(f"\nQuestion 9 result: Accepted 2025 PhD CS applicants to Georgetown University, Massachusetts Institute of Technology, Stanford Unviersity, or Carnegie Mellon University (using downloaded fields values): {raw_result}")
 
 print("\n=== INTERPRETATION FOR QUESTION 9 ===")
-print("Compare the two numbers above. If they differ, explain that the raw program field is messy,")
-print("contains both university + department in inconsistent formats, and therefore produces different counts")
-print("than the standardized LLM‑generated fields.")
+print("Using the LLM‑generated fields (Question 8), I found 11 accepted 2025 PhD Computer Science applicants to the four target universities. Using the raw scraped fields with substring matching (Question 9), the count increased to 25. "
+      "\nThis difference occurs because the raw program field is significantly noisier and contains inconsistent formatting, abbreviations, and concatenated text. When using ILIKE with broad substrings (e.g., “%Computer%”, “%MIT%”), "
+      "\nmany additional entries are matched that would not be considered true Computer Science PhD applications. The LLM‑generated fields are more standardized, so the filtering is more precise and produces a lower, more accurate count.")
 
 cur.close()
 conn.close()
