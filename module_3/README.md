@@ -1,6 +1,5 @@
 # Module_3: Database Queries
-Tonya Capillo | JHED ID: 174BAB | Due Feb 8, 2026 11:59 PM EST 
-SSH url: git@github.com:tcapillo28/jhu_software_concepts.git
+Tonya Capillo | JHED ID: 174BAB | Due Feb 8, 2026 11:59 PM EST | SSH url: git@github.com:tcapillo28/jhu_software_concepts.git
 
 Project Overview:
 This project uses two Python scripts — load_data.py and query_data.py — to load applicant data into a PostgreSQL database (dname: gradcafe) and then answer a series of analytical questions using SQL.
