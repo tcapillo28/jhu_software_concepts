@@ -26,11 +26,11 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 1
     # ---------------------------------------------------------
-    print("\nQuestion 1. Number of Fall 2025 applicants:")
+    print("\nQuestion 1. Number of Fall 2026 applicants:")
     q1 = """
     SELECT COUNT(*)
     FROM applicants
-    WHERE term = 'Fall 2025';
+    WHERE term = 'Fall 2026';
     """
     cur.execute(q1)
     print(cur.fetchone()[0])
@@ -96,13 +96,13 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 4
     # ---------------------------------------------------------
-    print("\nQuestion 4: Average GPA of American students in Fall 2025:")
+    print("\nQuestion 4: Average GPA of American students in Fall 2026:")
     q4 = """
     SELECT
         ROUND(AVG(gpa)::numeric, 2)
     FROM applicants
     WHERE us_or_international = 'American'
-      AND term = 'Fall 2025';
+      AND term = 'Fall 2026';
     """
     cur.execute(q4)
     print(cur.fetchone()[0])
@@ -110,7 +110,7 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 5
     # ---------------------------------------------------------
-    print("\nQuestion 5. Percent of Fall 2025 entries that are Acceptances:")
+    print("\nQuestion 5. Percent of Fall 2026 entries that are Acceptances:")
     q5 = """
     SELECT 
         ROUND(
@@ -118,7 +118,7 @@ def get_full_output():
             / COUNT(*) * 100)
         , 2)
     FROM applicants
-    WHERE term = 'Fall 2025';
+    WHERE term = 'Fall 2026';
     """
     cur.execute(q5)
     print(str(cur.fetchone()[0]) + "%")
@@ -126,12 +126,12 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 6
     # ---------------------------------------------------------
-    print("\nQuestion 6. Average GPA of Accepted applicants in Fall 2025:")
+    print("\nQuestion 6. Average GPA of Accepted applicants in Fall 2026:")
     q6 = """
     SELECT
         ROUND(AVG(gpa)::numeric, 2)
     FROM applicants
-    WHERE term = 'Fall 2025'
+    WHERE term = 'Fall 2026'
       AND status = 'Accepted';
     """
     cur.execute(q6)
@@ -154,11 +154,11 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 8
     # ---------------------------------------------------------
-    print("\nQuestion 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanford, or CMU (LLM fields):")
+    print("\nQuestion 8. Accepted 2026 PhD CS applicants to Georgetown, MIT, Stanford, or CMU (LLM fields):")
     q8 = """
     SELECT COUNT(*) AS accepted_2025_top4_phd_cs
     FROM applicants
-    WHERE term LIKE '%2025'
+    WHERE term LIKE '%2026'
       AND status = 'Accepted'
       AND degree = 'PhD'
       AND llm_generated_program LIKE 'Computer Science'
@@ -176,11 +176,11 @@ def get_full_output():
     # ---------------------------------------------------------
     #   Question 9
     # ---------------------------------------------------------
-    print("\nQuestion 9 result: Accepted 2025 PhD CS applicants using RAW fields:")
+    print("\nQuestion 9 result: Accepted 2026 PhD CS applicants using RAW fields:")
     q9_raw = """
     SELECT COUNT(*) AS raw_accepted_2025_top4_phd_cs
     FROM applicants
-    WHERE term LIKE '%2025'
+    WHERE term LIKE '%2026'
       AND status = 'Accepted'
       AND degree = 'PhD'
       AND program ILIKE '%Computer%'
