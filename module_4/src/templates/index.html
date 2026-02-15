@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grad School Cafe Data Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header-small">Grad School Cafe Data Analysis</div>
+        <div class="header-line"></div>
+
+        <div class="main-title">Analysis</div>
+
+<!------------- BUTTON AREA WRAPPER ---------------------------->
+    <div class="button-area">
+
+        <div class="button-stack">
+
+            <div class="pull-data-block">
+                <a href="/pull_data" class="button">Pull Data</a>
+                <span class="button-info">
+                    Pulls the newest GradCafe posts and adds only new entries to your database.
+                </span>
+            </div>
+
+            <div class="update-analysis-block">
+                <a href="/update_analysis" class="button">Update Analysis</a>
+                <span class="button-info">
+                    Updates the analysis using the latest data.
+                </span>
+            </div>
+
+
+        </div>
+    </div>
+    <!-- END BUTTON AREA -->
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <!-- TILES ARE NOW OUTSIDE THE BUTTON STACK <--- FIXED -->
+    {% for item in tiles %}
+    <div class="tile">
+        <div class="question">{{ item.question }}</div>
+        <div class="answer"><strong>Answer:</strong> {{ item.answer }}</div>
+    </div>
+    {% endfor %}
+
+</div>
+</body>
+</html>
