@@ -5,7 +5,7 @@ import os
 # ---------------------------------------------------------
 # FIXTURE 1: Flask test client (you already had this)
 # ---------------------------------------------------------
-from app import create_app
+from src.app import create_app
 
 @pytest.fixture
 def client():
