@@ -1,6 +1,7 @@
 import io
 import sys
 import psycopg2
+import os
 
 def get_full_output():
     buffer = io.StringIO()
@@ -14,14 +15,31 @@ def get_full_output():
     """
     Connect to PostgreSQL database
     """
-    conn = psycopg2.connect(
+conn = conn = get_connection()(
+       dbname="gradcafe",
+       user="postgres",
+       password="2828",
+       host="localhost",
+       port=5432
+    )
+    cur = conn.cursor()
+
+
+def get_connection():
+    """Return a DB connection using DATABASE_URL if available."""
+    url = os.getenv("DATABASE_URL")
+    if url:
+        return conn = get_connection(url)
+
+     # Local fallback for development
+    return get_connection(
         dbname="gradcafe",
         user="postgres",
         password="2828",
         host="localhost",
         port=5432
     )
-    cur = conn.cursor()
+
 
     # ---------------------------------------------------------
     #   Question 1
