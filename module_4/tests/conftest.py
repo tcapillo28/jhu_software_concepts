@@ -79,4 +79,7 @@ def fake_scrape_output():
 
 @pytest.fixture(autouse=True)
 def mock_full_output(mocker):
-    mocker.patch("src.app.get_full_output", return_value="Mocked output")
+    mocker.patch(
+        "src.app.get_full_output",
+        return_value="Mocked output\nAcceptance rate: 50.00%"
+    )
