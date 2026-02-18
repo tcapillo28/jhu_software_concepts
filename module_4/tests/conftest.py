@@ -74,3 +74,9 @@ def fake_scrape_output():
         {"id": 1, "program": "CS", "decision": "Accepted"},
         {"id": 2, "program": "Biology", "decision": "Rejected"},
     ]
+
+
+
+@pytest.fixture(autouse=True)
+def mock_full_output(mocker):
+    mocker.patch("src.query_data.get_full_output", return_value="Mocked output")
