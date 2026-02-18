@@ -30,28 +30,35 @@ def get_full_output():
         conn = get_connection()
         cur = conn.cursor()
 
-    # ---------------------------------------------------------
-    #   Question 1
-    # ---------------------------------------------------------
-    print("\nQuestion 1. Number of Fall 2026 applicants:")
-    q1 = """
-    SELECT COUNT(*)
-    FROM applicants
-    WHERE term = 'Fall 2026';
-    """
-    cur.execute(q1)
-    print(cur.fetchone()[0])
+        # ---------------------------------------------------------
+        #   Question 1
+        # ---------------------------------------------------------
+        print("\nQuestion 1. Number of Fall 2026 applicants:")
+        q1 = """
+        SELECT COUNT(*)
+        FROM applicants
+        WHERE term = 'Fall 2026';
+        """
+        cur.execute(q1)
+        print(cur.fetchone()[0])
 
-    print("\nQuestion 1.A) What are the number of entries/applicants for each term?")
-    q_all_terms = """
-    SELECT DISTINCT term, COUNT(*) AS num_entries
-    FROM applicants
-    GROUP BY term
-    ORDER BY term;
-    """
-    cur.execute(q_all_terms)
-    for term, count in cur.fetchall():
-        print(f"{term}: {count}")
+        print("\nQuestion 1.A) What are the number of entries/applicants for each term?")
+        q_all_terms = """
+        SELECT DISTINCT term, COUNT(*) AS num_entries
+        FROM applicants
+        GROUP BY term
+        ORDER BY term;
+        """
+        cur.execute(q_all_terms)
+        for term, count in cur.fetchall():
+            print(f"{term}: {count}")
+
+        conn.close()
+
+    finally:
+        sys.stdout = original_stdout
+
+    return buffer.getvalue()
 
     # ---------------------------------------------------------
     #   Question 2
