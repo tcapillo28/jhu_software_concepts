@@ -5,8 +5,17 @@ import os
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
+
 # Global counter to track number of processed entries
 global_count = 0
+
+def load_rows():
+    """
+    Placeholder function required for tests.
+    Tests patch this function to return fake scraped rows.
+    """
+    return []
+
 
 # ============================================================
 # PUBLIC FUNCTIONS

@@ -1,6 +1,14 @@
 import pytest
 import json
 import os
+import sys
+
+# Add module_4 to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Add project root to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+
 
 # ---------------------------------------------------------
 # FIXTURE 1: Flask test client (you already had this)

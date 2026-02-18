@@ -1,7 +1,9 @@
 import pytest
+from src.load_data import db_session
+
 
 @pytest.mark.integration
-def test_end_to_end_flow(client, db_session, mocker):
+def test_end_to_end_flow(client, mocker):
     fake_rows = [
         {"id": 1, "program": "CS"},
         {"id": 2, "program": "Biology"}

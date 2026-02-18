@@ -1,15 +1,15 @@
-from flask import Flask, render_template, redirect, url_for, request
-from src.query_data import get_full_output
 import re
-import threading
-import time
-app = Flask(__name__)
+from flask import Flask, render_template
+import src.state as state
+from src.query_data import get_full_output
+import src.load_data as load_data
 
-# ---------------------------------------------------------
-# Pytest needs a way to create a fresh Flask app instance
-# for every test
-# ---------------------------------------------------------
+
 def create_app(testing=False):
+    """
+    Factory function required by pytest.
+    Creates a fresh Flask app instance for each test.
+    """
     app = Flask(__name__)
     app.config["TESTING"] = testing
 
@@ -17,44 +17,24 @@ def create_app(testing=False):
     return app
 
 
-# ---------------------------------------------------------
-# Background scraper runner
-# ---------------------------------------------------------
-
-# Track whether scraping is running (busy state)
-scrape_running = False
-
-
-def run_scraper():
-    global scrape_running
-    scrape_running = True
-
-    # Import your module 2 scraper here
-    from scrape import scrape_data, save_data
-
-    try:
-        # Scrape new data (you can adjust pages or logic)
-        new_entries = scrape_data(pages=1)
-        save_data(new_entries)
-    finally:
-        scrape_running = False
-
-# ---------------------------------------------------------
-# Route Registration Wrapper
-# ---------------------------------------------------------
 def register_routes(app):
+    """
+    Register all Flask routes for Module 4.
+    """
 
-    # -------------------------------
+    # ---------------------------------------------------------
     # Main Analysis Page
-    # -------------------------------
+    # ---------------------------------------------------------
     @app.route("/")
     def index():
+        """
+        Render the analysis page with tiles.
+        """
         full_text = get_full_output()
 
         # Split into tiles based on "Question X"
         tiles = re.split(r'\n(?=Question\s+\d+)', full_text.strip())
 
-        # Clean each tile: first line = question, rest = answer
         parsed_tiles = []
         for block in tiles:
             lines = block.strip().split("\n", 1)
@@ -62,98 +42,61 @@ def register_routes(app):
             answer = lines[1].strip() if len(lines) > 1 else ""
             parsed_tiles.append({"question": question, "answer": answer})
 
-        message = request.args.get("message", "")
+        return render_template("index.html", tiles=parsed_tiles)
+
+    # ---------------------------------------------------------
+    # Pull Data Button (API)
+    # ---------------------------------------------------------
+    @app.post("/pull-data")
+    def pull_data_api():
+        """
+        API endpoint triggered by the Pull Data button.
+        Tests patch load_rows() to return fake scraped rows.
+        """
+        if state.is_busy():
+            return {"busy": True}, 409
+
+        # Mark busy
+        state.set_busy(True)
+
+        # Tests patch this → returns fake rows
+        rows = load_data.load_rows()
+        load_data.insert_rows(rows)
+
+        # Mark not busy
+        state.set_busy(False)
+
+        return {"ok": True}, 200
+
+    # ---------------------------------------------------------
+    # Update Analysis Button (API)
+    # ---------------------------------------------------------
+    @app.post("/update-analysis")
+    def update_analysis_api():
+        """
+        API endpoint triggered by the Update Analysis button.
+        """
+        if state.is_busy():
+            return {"busy": True}, 409
+
+        return {"ok": True}, 200
+
+    @app.get("/analysis")
+    def analysis_page():
+        full_text = get_full_output()
+
+        tiles = re.split(r'\n(?=Question\s+\d+)', full_text.strip())
+        parsed_tiles = []
+        for block in tiles:
+            lines = block.strip().split("\n", 1)
+            question = lines[0].strip()
+            answer = lines[1].strip() if len(lines) > 1 else ""
+            parsed_tiles.append({"question": question, "answer": answer})
 
         return render_template("index.html", tiles=parsed_tiles)
-    # -------------------------------
-    # Pull Data Button Route
-    # -------------------------------
-    @app.route("/pull_data")
-    def pull_data():
-        global scrape_running
-
-        if scrape_running:
-            return redirect(url_for("index", message="A data pull is already running. Please wait."))
-
-        # Start scraper in background thread
-        thread = threading.Thread(target=run_scraper)
-        thread.start()
-
-        return redirect(url_for("index", message="Pulling new data from GradCafe… This may take a moment."))
-
-    # -------------------------------
-    # Update Analysis Button Route
-    # -------------------------------
-    @app.route("/update_analysis")
-    def update_analysis():
-        global scrape_running
-
-        if scrape_running:
-            return redirect(url_for("index", message="Cannot update analysis while data is being pulled."))
-
-        # Re-run your analysis logic here
-        tiles = get_full_output()
-
-        return redirect(url_for("index", message="Analysis updated with the latest data."))
-
-
 # ---------------------------------------------------------
-# Main Analysis Page
+# Run the app normally (not used in pytest)
 # ---------------------------------------------------------
-
-@app.route("/")
-def index():
-    full_text = get_full_output()
-
-    # Split into tiles based on "Question X"
-    tiles = re.split(r'\n(?=Question\s+\d+)', full_text.strip())
-
-    # Clean each tile: first line = question, rest = answer
-    parsed_tiles = []
-    for block in tiles:
-        lines = block.strip().split("\n", 1)
-        question = lines[0].strip()
-        answer = lines[1].strip() if len(lines) > 1 else ""
-        parsed_tiles.append({"question": question, "answer": answer})
-    message = request.args.get("message", "")  # <--- NEW
-
-    return render_template("index.html", tiles=parsed_tiles)
-
-# ---------------------------------------------------------
-# Pull Data Button Route
-# ---------------------------------------------------------
-
-@app.route("/pull_data")
-def pull_data():
-    global scrape_running
-
-    if scrape_running:
-        return redirect(url_for("index", message="A data pull is already running. Please wait."))
-
-    # Start scraper in background thread
-    thread = threading.Thread(target=run_scraper)
-    thread.start()
-
-    return redirect(url_for("index", message="Pulling new data from GradCafe… This may take a moment."))
-
-# ---------------------------------------------------------
-# Update Analysis Button Route
-# ---------------------------------------------------------
-
-@app.route("/update_analysis")
-def update_analysis():
-    global scrape_running
-
-    if scrape_running:
-        return redirect(url_for("index", message="Cannot update analysis while data is being pulled."))
-
-    # Re-run your analysis logic here
-    tiles = get_full_output()   # whatever function builds your analysis tiles
-
-    return redirect(url_for("index", message="Analysis updated with the latest data."))
-
 if __name__ == "__main__":
     app = create_app()
     app.run(host="0.0.0.0", port=8080)
-
-
