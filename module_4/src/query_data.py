@@ -3,33 +3,32 @@ import sys
 import psycopg2
 import os
 
-def get_full_output():
-    buffer = io.StringIO()
-    original_stdout = sys.stdout
-    sys.stdout = buffer
-
-    # ---------------------------------------------------------
-    # YOUR ORIGINAL SCRIPT (UNCHANGED)
-    # ---------------------------------------------------------
-
-    """
-    Connect to PostgreSQL database
-    """
-conn = conn = get_connection()
-    cur = conn.cursor()
-
 
 def get_connection():
     """Return a DB connection using DATABASE_URL if available."""
     url = os.getenv("DATABASE_URL")
     if url:
-        return conn = get_connection(url)
+        return psycopg2.connect(url)
 
-     # Local fallback for development
-    return get_connection(
-
+    # Local fallback for development
+    return psycopg2.connect(
+        dbname="gradcafe",
+        user="postgres",
+        password="2828",
+        host="localhost",
+        port=5432
     )
 
+
+def get_full_output():
+    """Run all SQL queries and capture printed output."""
+    buffer = io.StringIO()
+    original_stdout = sys.stdout
+    sys.stdout = buffer
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
 
     # ---------------------------------------------------------
     #   Question 1
