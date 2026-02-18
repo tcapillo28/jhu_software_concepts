@@ -15,13 +15,7 @@ def get_full_output():
     """
     Connect to PostgreSQL database
     """
-conn = conn = get_connection()(
-       dbname="gradcafe",
-       user="postgres",
-       password="2828",
-       host="localhost",
-       port=5432
-    )
+conn = conn = get_connection()
     cur = conn.cursor()
 
 
@@ -33,11 +27,7 @@ def get_connection():
 
      # Local fallback for development
     return get_connection(
-        dbname="gradcafe",
-        user="postgres",
-        password="2828",
-        host="localhost",
-        port=5432
+
     )
 
 
