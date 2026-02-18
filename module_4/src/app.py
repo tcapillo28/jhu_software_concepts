@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
-from query_data import get_full_output
+from src.query_data import get_full_output
 import re
 import threading
 import time
