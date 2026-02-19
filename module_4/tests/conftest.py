@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 # ---------------------------------------------------------
 # FIXTURE 1: Flask test client (you already had this)
 # ---------------------------------------------------------
-from src.app import create_app
+from module_4.src.app import create_app
 
 @pytest.fixture
 def client():
