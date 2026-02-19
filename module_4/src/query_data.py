@@ -1,35 +1,17 @@
 import io
 import sys
-import psycopg2
-import os
-
-
-def get_connection():
-    """Return a DB connection using DATABASE_URL if available."""
-    url = os.getenv("DATABASE_URL")
-    if url:
-        return psycopg2.connect(url)
-
-    # Local fallback for development
-    return psycopg2.connect(
-        dbname="gradcafe",
-        user="postgres",
-        password="2828",
-        host="localhost",
-        port=5432
-    )
+from src.database import get_db
 
 
 def get_full_output():
-    """Run all SQL queries and capture printed output."""
+    """Run all SQL queries using SQLite and capture printed output."""
+    db = get_db()
+
     buffer = io.StringIO()
     original_stdout = sys.stdout
     sys.stdout = buffer
 
     try:
-        conn = get_connection()
-        cur = conn.cursor()
-
         # ---------------------------------------------------------
         #   Question 1
         # ---------------------------------------------------------
@@ -39,18 +21,17 @@ def get_full_output():
         FROM applicants
         WHERE term = 'Fall 2026';
         """
-        cur.execute(q1)
-        print("Answer:", cur.fetchone()[0])
+        q1_val = db.execute(q1).fetchone()[0]
+        print("Answer:", q1_val)
 
         print("\nQuestion 1.A) What are the number of entries/applicants for each term?")
         q_all_terms = """
-        SELECT DISTINCT term, COUNT(*) AS num_entries
+        SELECT term, COUNT(*) AS num_entries
         FROM applicants
         GROUP BY term
         ORDER BY term;
         """
-        cur.execute(q_all_terms)
-        for term, count in cur.fetchall():
+        for term, count in db.execute(q_all_terms).fetchall():
             print(f"Answer: {term}: {count}")
 
         # ---------------------------------------------------------
@@ -60,13 +41,13 @@ def get_full_output():
         q2 = """
         SELECT 
             ROUND(
-                (SUM(CASE WHEN us_or_international = 'International' THEN 1 ELSE 0 END)::numeric 
+                (SUM(CASE WHEN us_or_international = 'International' THEN 1 ELSE 0 END) * 1.0 
                 / COUNT(*) * 100)
             , 2)
         FROM applicants;
         """
-        cur.execute(q2)
-        print(f"Answer: {cur.fetchone()[0]}%")
+        q2_val = db.execute(q2).fetchone()[0]
+        print(f"Answer: {q2_val}%")
 
         print("\nQuestion 2.A) What are the total entries by citizenship category?")
         q_cit_counts = """
@@ -77,8 +58,7 @@ def get_full_output():
         GROUP BY us_or_international
         ORDER BY us_or_international;
         """
-        cur.execute(q_cit_counts)
-        for category, total in cur.fetchall():
+        for category, total in db.execute(q_cit_counts).fetchall():
             print(f"Answer: {category}: {total}")
 
         # ---------------------------------------------------------
@@ -87,14 +67,13 @@ def get_full_output():
         print("\nQuestion 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):")
         q3 = """
         SELECT
-            ROUND(AVG(gpa)::numeric, 2),
-            ROUND(AVG(gre)::numeric, 2),
-            ROUND(AVG(gre_v)::numeric, 2),
-            ROUND(AVG(gre_aw)::numeric, 2)
+            ROUND(AVG(gpa), 2),
+            ROUND(AVG(gre), 2),
+            ROUND(AVG(gre_v), 2),
+            ROUND(AVG(gre_aw), 2)
         FROM applicants;
         """
-        cur.execute(q3)
-        avg_gpa, avg_gre, avg_gre_v, avg_gre_aw = cur.fetchone()
+        avg_gpa, avg_gre, avg_gre_v, avg_gre_aw = db.execute(q3).fetchone()
         print(f"Answer: Average GPA: {avg_gpa}")
         print(f"Answer: Average GRE Total: {avg_gre}")
         print(f"Answer: Average GRE Verbal: {avg_gre_v}")
@@ -106,13 +85,13 @@ def get_full_output():
         print("\nQuestion 4: Average GPA of American students in Fall 2026:")
         q4 = """
         SELECT
-            ROUND(AVG(gpa)::numeric, 2)
+            ROUND(AVG(gpa), 2)
         FROM applicants
         WHERE us_or_international = 'American'
           AND term = 'Fall 2026';
         """
-        cur.execute(q4)
-        print("Answer:", cur.fetchone()[0])
+        q4_val = db.execute(q4).fetchone()[0]
+        print("Answer:", q4_val)
 
         # ---------------------------------------------------------
         #   Question 5
@@ -121,14 +100,14 @@ def get_full_output():
         q5 = """
         SELECT 
             ROUND(
-                (SUM(CASE WHEN status = 'Accepted' THEN 1 ELSE 0 END)::numeric 
+                (SUM(CASE WHEN status = 'Accepted' THEN 1 ELSE 0 END) * 1.0
                 / COUNT(*) * 100)
             , 2)
         FROM applicants
         WHERE term = 'Fall 2026';
         """
-        cur.execute(q5)
-        print(f"Answer: {cur.fetchone()[0]}%")
+        q5_val = db.execute(q5).fetchone()[0]
+        print(f"Answer: {q5_val}%")
 
         # ---------------------------------------------------------
         #   Question 6
@@ -136,13 +115,13 @@ def get_full_output():
         print("\nQuestion 6. Average GPA of Accepted applicants in Fall 2026:")
         q6 = """
         SELECT
-            ROUND(AVG(gpa)::numeric, 2)
+            ROUND(AVG(gpa), 2)
         FROM applicants
         WHERE term = 'Fall 2026'
           AND status = 'Accepted';
         """
-        cur.execute(q6)
-        print("Answer:", cur.fetchone()[0])
+        q6_val = db.execute(q6).fetchone()[0]
+        print("Answer:", q6_val)
 
         # ---------------------------------------------------------
         #   Question 7
@@ -155,67 +134,59 @@ def get_full_output():
           AND degree = 'Masters'
           AND llm_generated_program = 'Computer Science';
         """
-        cur.execute(q7)
-        print("Answer:", cur.fetchone()[0])
+        q7_val = db.execute(q7).fetchone()[0]
+        print("Answer:", q7_val)
 
         # ---------------------------------------------------------
         #   Question 8
         # ---------------------------------------------------------
         print("\nQuestion 8. Accepted 2026 PhD CS applicants to Georgetown, MIT, Stanford, or CMU (LLM fields):")
         q8 = """
-        SELECT COUNT(*) AS accepted_2025_top4_phd_cs
+        SELECT COUNT(*) AS accepted_2026_top4_phd_cs
         FROM applicants
         WHERE term LIKE '%2026'
           AND status = 'Accepted'
           AND degree = 'PhD'
-          AND llm_generated_program LIKE 'Computer Science'
-          AND llm_generated_university LIKE ANY (ARRAY[
-                '%Georgetown%',
-                '%Massachusetts Institute of Technology%',
-                '%MIT%',
-                '%Stanford%',
-                '%Carnegie Mellon%'
-          ]);
+          AND llm_generated_program LIKE '%Computer Science%'
+          AND (
+                llm_generated_university LIKE '%Georgetown%'
+             OR llm_generated_university LIKE '%Massachusetts Institute of Technology%'
+             OR llm_generated_university LIKE '%MIT%'
+             OR llm_generated_university LIKE '%Stanford%'
+             OR llm_generated_university LIKE '%Carnegie Mellon%'
+          );
         """
-        cur.execute(q8)
-        print("Answer:", cur.fetchone()[0])
+        q8_val = db.execute(q8).fetchone()[0]
+        print("Answer:", q8_val)
 
         # ---------------------------------------------------------
         #   Question 9
         # ---------------------------------------------------------
         print("\nQuestion 9 result: Accepted 2026 PhD CS applicants using RAW fields:")
         q9_raw = """
-        SELECT COUNT(*) AS raw_accepted_2025_top4_phd_cs
+        SELECT COUNT(*) AS raw_accepted_2026_top4_phd_cs
         FROM applicants
         WHERE term LIKE '%2026'
           AND status = 'Accepted'
           AND degree = 'PhD'
-          AND program ILIKE '%Computer%'
+          AND program LIKE '%Computer%'
           AND (
-                program ILIKE '%Georgetown%'
-             OR program ILIKE '%MIT%'
-             OR program ILIKE '%Massachusetts Institute of Technology%'
-             OR program ILIKE '%Stanford%'
-             OR program ILIKE '%Carnegie Mellon%'
+                program LIKE '%Georgetown%'
+             OR program LIKE '%MIT%'
+             OR program LIKE '%Massachusetts Institute of Technology%'
+             OR program LIKE '%Stanford%'
+             OR program LIKE '%Carnegie Mellon%'
           );
         """
-        cur.execute(q9_raw)
-        print("Answer:", cur.fetchone()[0])
+        q9_val = db.execute(q9_raw).fetchone()[0]
+        print("Answer:", q9_val)
 
         print("\n=== INTERPRETATION FOR QUESTION 9 ===")
-        print("Answer: Using the LLM‑generated fields (Question 8), I found 22 accepted 2025 PhD Computer Science applicants to the four target universities.")
+        print("Answer: Using the LLM‑generated fields (Question 8), I found 22 accepted 2026 PhD Computer Science applicants to the four target universities.")
         print("Answer: Using the raw scraped fields with substring matching (Question 9), the count increased to 50.")
         print("Answer: This difference occurs because the raw program field is significantly noisier and contains inconsistent formatting.")
         print("Answer: The LLM‑generated fields are more standardized, so the filtering is more precise.")
 
-        cur.close()
-        conn.close()
-
-
-
-    # ---------------------------------------------------------
-    # RESTORE STDOUT AND RETURN TEXT
-    # ---------------------------------------------------------
     finally:
         sys.stdout = original_stdout
 
