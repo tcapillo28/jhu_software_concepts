@@ -1,6 +1,6 @@
 import io
 import sys
-from src.database import get_db
+from module_4.src.database import get_db
 
 
 def get_full_output():
