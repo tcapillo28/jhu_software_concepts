@@ -19,27 +19,25 @@
         <div class="button-stack">
 
             <div class="pull-data-block">
-                <a href="/pull_data" class="button" data-testid="pull-data-btn">Pull Data</a>
+                <form method="POST" action="/pull-data">
+                    <button type="submit" class="button" data-testid="pull-data-btn">Pull Data</button>
+                </form>
                 <span class="button-info">
                     Pulls the newest GradCafe posts and adds only new entries to your database.
                 </span>
             </div>
 
             <div class="update-analysis-block">
-                <a href="/update_analysis" class="button" data-testid="update-analysis-btn">Update Analysis</a>
+                <form method="POST" action="/update-analysis">
+                    <button type="submit" class="button" data-testid="update-analysis-btn">Update Analysis</button>
+                </form>
                 <span class="button-info">
                     Updates the analysis using the latest data.
                 </span>
             </div>
 
-
         </div>
     </div>
-    <!-- END BUTTON AREA -->
-    {% if message %}
-    <div class="message">{{ message }}</div>
-    {% endif %}
-
     <!-- TILES ARE NOW OUTSIDE THE BUTTON STACK <--- FIXED -->
     {% for item in tiles %}
     <div class="tile">

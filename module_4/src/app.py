@@ -66,6 +66,7 @@ def register_routes(app):
         # Mark not busy
         state.set_busy(False)
 
+
         return {"ok": True}, 200
 
     # ---------------------------------------------------------
