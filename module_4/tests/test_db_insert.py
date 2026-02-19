@@ -1,0 +1,26 @@
+import pytest
+from unittest.mock import patch
+from src.app import create_app
+
+@pytest.fixture
+def client():
+    app = create_app()
+    app.config["TESTING"] = True
+    return app.test_client()
+
+def test_pull_data_inserts_rows(client):
+    # Mock scrape.load_rows() to return fake rows
+    fake_rows = [{"program": "CS", "result": "Accepted"}]
+
+    with patch("src.scrape.load_rows", return_value=fake_rows) as mock_scrape:
+        with patch("src.load_data.insert_rows") as mock_insert:
+            response = client.post("/pull-data")
+
+            # Ensure the route succeeded
+            assert response.status_code == 200
+
+            # Ensure scrape.load_rows() was called
+            mock_scrape.assert_called_once()
+
+            # Ensure insert_rows() was called with the fake rows
+            mock_insert.assert_called_once_with(fake_rows)
