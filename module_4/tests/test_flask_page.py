@@ -16,3 +16,7 @@ def test_analysis_page_loads(client):
     assert "Pull Data" in html
     assert "Update Analysis" in html
     assert "Answer:" in html
+
+def test_root_redirects(client):
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (301, 302)

@@ -1,4 +1,3 @@
 def load_rows():
-    # Real scraping NOT required for Module 4
-    # Tests will mock this function
+    """Return placeholder scraped rows (never used in real tests)."""
     return []

@@ -24,3 +24,16 @@ def test_pull_data_inserts_rows(client):
 
             # Ensure insert_rows() was called with the fake rows
             mock_insert.assert_called_once_with(fake_rows)
+
+def test_load_data_functions():
+    from src import load_data
+
+    load_data._db.clear()
+    load_data.insert_rows([{"x": 1}])
+    rows = load_data.get_all_rows()
+
+    assert rows == [{"x": 1}]
+
+def test_scrape_load_rows():
+    from src.scrape import load_rows
+    assert load_rows() == []

@@ -17,3 +17,8 @@ def test_analysis_page_includes_result(client):
     response = client.get("/analysis")
     html = response.data.decode()
     assert "Answer:" in html
+
+def test_update_analysis_returns_json(client):
+    response = client.post("/update-analysis")
+    assert response.status_code == 200
+    assert "analysis" in response.json

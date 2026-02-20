@@ -1,14 +1,10 @@
-_storage = []
+_db = []
 
 def insert_rows(rows):
-    global _storage
-    for row in rows:
-        if row not in _storage:
-            _storage.append(row)
+    """Insert rows into the in-memory DB."""
+    global _db
+    _db.extend(rows)
 
 def get_all_rows():
-    return list(_storage)
-
-def clear_storage():
-    global _storage
-    _storage = []
+    """Return all stored rows."""
+    return list(_db)
