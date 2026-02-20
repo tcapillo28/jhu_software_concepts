@@ -1,0 +1,16 @@
+(venv) PS C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_4> pytest -q
+.............                                                                                       [100%]
+============================================= tests coverage =============================================
+____________________________ coverage: platform win32, python 3.14.2-final-0 _____________________________
+
+Name               Stmts   Miss  Cover   Missing
+------------------------------------------------
+src\__init__.py        0      0   100%
+src\analysis.py        2      0   100%
+src\app.py            28      0   100%
+src\load_data.py       5      0   100%
+src\scrape.py          2      0   100%
+src\state.py           5      0   100%
+------------------------------------------------
+TOTAL                 42      0   100%
+Required test coverage of 100% reached. Total coverage: 100.00%
