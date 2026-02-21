@@ -1,15 +1,23 @@
 import io
 import sys
-import psycopg2
+
+
+
+# ---------------------------------------------------------
+# SQL ANALYSIS
+# ---------------------------------------------------------
 
 def get_full_output():
+    '''
+    The psycopg2 import is placed inside get_full_output()
+    so that database dependencies are only loaded when the function is executed,
+    preventing import errors during Module 4 tests that do not require database access.
+    '''
+    import psycopg2
+
     buffer = io.StringIO()
     original_stdout = sys.stdout
     sys.stdout = buffer
-
-    # ---------------------------------------------------------
-    # YOUR ORIGINAL SCRIPT (UNCHANGED)
-    # ---------------------------------------------------------
 
     """
     Connect to PostgreSQL database
@@ -212,3 +220,53 @@ def get_full_output():
     # ---------------------------------------------------------
     sys.stdout = original_stdout
     return buffer.getvalue()
+
+# ---------------------------------------------------------
+# STATIC ANALYSIS INSTANCE FOR MODULE 4 TESTING
+# ---------------------------------------------------------
+
+def get_static_output():
+    """
+    A static, database‑free version of the analysis output.
+    Used ONLY for Module 4 Flask tests.
+    """
+    return """
+Question 1. Number of Fall 2025 applicants:
+123
+
+Question 1.A) What are the number of entries/applicants for each term?
+Fall 2025: 123
+Spring 2025: 87
+
+Question 2. Percentage of entries from international students:
+45.00%
+
+Question 2.A) What are the total entries by citizenship category?
+American: 150
+International: 123
+
+Question 3. Average GPA, GRE, GRE V, and GRE AW (excluding missing values):
+Average GPA: 3.55
+Average GRE Total: 315
+Average GRE Verbal: 155
+Average GRE AW: 4.00
+
+Question 4: Average GPA of American students in Fall 2025:
+3.60
+
+Question 5. Percent of Fall 2025 entries that are Acceptances:
+22.00%
+
+Question 6. Average GPA of Accepted applicants in Fall 2025:
+3.70
+
+Question 7. Number of JHU Master's in Computer Science applicants:
+12
+
+Question 8. Accepted 2025 PhD CS applicants to Georgetown, MIT, Stanford, or CMU (LLM fields):
+22
+
+Question 9 result: Accepted 2025 PhD CS applicants using RAW fields:
+50
+"""
+

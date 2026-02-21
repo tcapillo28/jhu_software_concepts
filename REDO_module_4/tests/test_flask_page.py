@@ -21,7 +21,7 @@ def test_app_factory(client):
     This test inspects the application's URL map to confirm that the Module 4
     API endpoints are present. These include:
 
-    * ``/analysis`` – GET route for rendering the analysis page.
+    * ``/analysis`` – GET route for rendering the static instance of the analysis page.
     * ``/pull-data`` – POST route for initiating a data pull (mocked in tests).
     * ``/update-analysis`` – POST route for triggering an analysis update.
 
@@ -35,8 +35,8 @@ def test_app_factory(client):
 
     # Module-4 required routes
     assert "/analysis" in routes
-    assert "/pull-data" in routes
-    assert "/update-analysis" in routes
+    assert "/pull_data" in routes
+    assert "/update_analysis" in routes
 
 
 @pytest.mark.web

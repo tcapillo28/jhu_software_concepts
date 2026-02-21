@@ -5,7 +5,6 @@
 # ___________________________________________________________________________________
 
 import json
-import psycopg2
 import datetime
 from datetime import datetime
 
@@ -51,6 +50,7 @@ def load_data(json_path):
     """
     Opens the database, reads cleaned JSON, inserts every record into PostgreSQL.
     """
+    import psycopg2 # <-- moved here so Module 4 tests don’t import it
 
     # 1. Connect to PostgreSQL
     conn = psycopg2.connect(

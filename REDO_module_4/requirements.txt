@@ -1,0 +1,6 @@
+Flask
+pytest
+pytest-cov
+requests
+beautifulsoup4
+psycopg2-binary

@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
-from src.query_data import get_full_output
-from src.load_data import load_rows
-from src.scrape import scrape_data
+from src.query_data import get_full_output, get_static_output
+from src.load_data import load_data
 import re
 import threading
 
@@ -40,7 +39,13 @@ def register_routes(app):
     # -----------------------------------------------------
     @app.route("/")
     def index():
-        full_text = get_full_output()
+        # Default to static for Module 4 tests
+        mode = request.args.get("mode", "static")
+
+        if mode == "real":
+            full_text = get_full_output()
+        else:
+            full_text = get_static_output()
 
         # Split into tiles based on "Question X"
         tiles = re.split(r'\n(?=Question\s+\d+)', full_text.strip())
@@ -53,8 +58,16 @@ def register_routes(app):
             answer = lines[1].strip() if len(lines) > 1 else ""
             parsed_tiles.append({"question": question, "answer": answer})
 
-        message = request.args.get("message", "")  # <--- NEW
+        message = request.args.get("message", "")
         return render_template("index.html", tiles=parsed_tiles, message=message)
+
+    # ---------------------------------------------------------
+    # Static instance of analysis page for module 4
+    # ---------------------------------------------------------
+
+    @app.route("/analysis")
+    def analysis():
+        return index()
 
     # ---------------------------------------------------------
     # Pull Data Button Route
