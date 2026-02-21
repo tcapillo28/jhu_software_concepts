@@ -33,6 +33,9 @@ The application is intentionally minimal: it exposes a small set of routes, perf
 
 ---
 
+## Documentation
+Full project documentation is available on Read the Docs:
+https://jhu-software-concepts-module-4-tc.readthedocs.io/en/latest/
 
 ## How to Run the Application
 Follow these steps to start the Flask server locally:
