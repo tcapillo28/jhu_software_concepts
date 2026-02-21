@@ -36,7 +36,7 @@ def test_pull_data_success(mock_load, mock_scrape, client):
 def test_update_analysis_success(client):
     """Test that POST /update_analysis returns 200 when not busy.
 
-    The busy flag is explicitly set to False to simulate an idle state.
+    The busy flag is explicitly set to 'False', to simulate an idle state.
     The route should accept the request and return HTTP 200.
     """
 

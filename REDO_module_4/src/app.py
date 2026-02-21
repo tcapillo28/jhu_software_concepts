@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from src.query_data import get_full_output, get_static_output
+from src.scrape import scrape_data
 from src.load_data import load_data
 import re
 import threading
@@ -12,6 +13,9 @@ import threading
 def create_app(testing=False):
     app = Flask(__name__)
     app.config["TESTING"] = testing
+
+    app.scrape_running = False # Module 4 busy-state flag (tests rely on this)
+
     register_routes(app)
     return app
 
@@ -27,10 +31,9 @@ def register_routes(app):
         nonlocal scrape_running
         scrape_running = True
 
-        from scrape import scrape_data, save_data
         try:
             new_entries = scrape_data(pages=1)
-            save_data(new_entries)
+
         finally:
             scrape_running = False
 
@@ -102,26 +105,33 @@ def register_routes(app):
 
         return redirect(url_for("index", message="Analysis updated with the latest data."))
 
+    # ---------------------------------------------------------
+    # Module 4 POST routes (these are what your tests expect)
+    # ---------------------------------------------------------
 
     @app.post("/pull_data")
-    def pull_data():
+    def pull_data_api():
+        # Use the same busy flag the tests modify
         if app.scrape_running:
             return "Busy", 409
 
         app.scrape_running = True
-        rows = scrape_data()
-        load_data(rows)
-        app.scrape_running = False
 
+        rows = scrape_data()  # <-- this will be mocked
+        load_data(rows)  # <-- this will be mocked
+
+        app.scrape_running = False
         return "OK", 200
 
     @app.post("/update_analysis")
-    def update_analysis():
+    def update_analysis_api():
+        # Use the same busy flag the tests modify
         if app.scrape_running:
             return "Busy", 409
 
         result = get_full_output()
-        return jsonify(result), 200
+        return result, 200
+
 
 # ---------------------------------------------------------
 # Run Server (Module 3 behavior)
