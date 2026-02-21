@@ -1,5 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from src.query_data import get_full_output
+from src.load_data import load_rows
+from src.scrape import scrape_data
 import re
 import threading
 
