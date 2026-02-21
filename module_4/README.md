@@ -65,3 +65,25 @@ Run options:
 4. Run with coverage:
     ```bash
     pytest --cov=app --cov-report=term-missing
+
+## Project Structure
+module_4/
+├── app/
+│   ├── __init__.py
+│   ├── routes.py
+│   └── utils.py
+├── tests/
+│   ├── test_routes.py
+│   └── conftest.py
+├── docs/
+│   ├── source/
+│   │   ├── index.rst
+│   │   ├── overview.rst
+│   │   ├── architecture.rst
+│   │   ├── api_reference.rst
+│   │   ├── testing_guide.rst
+│   │   ├── operational_notes.rst
+│   │   └── modules.rst
+│   └── Makefile
+├── requirements.txt
+└── README.md
