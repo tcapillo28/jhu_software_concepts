@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from src.query_data import get_full_output, get_static_output
-from src.scrape import scrape_data
-from src.load_data import load_data
+import src.scrape as scrape_module
+import src.load_data as load_module
 import re
 import threading
 
@@ -111,21 +111,19 @@ def register_routes(app):
 
     @app.post("/pull_data")
     def pull_data_api():
-        # Use the same busy flag the tests modify
         if app.scrape_running:
             return "Busy", 409
 
         app.scrape_running = True
 
-        rows = scrape_data()  # <-- this will be mocked
-        load_data(rows)  # <-- this will be mocked
+        rows = scrape_module.scrape_data()  # mocked correctly
+        load_module.load_data(rows)  # mocked correctly
 
         app.scrape_running = False
         return "OK", 200
 
     @app.post("/update_analysis")
     def update_analysis_api():
-        # Use the same busy flag the tests modify
         if app.scrape_running:
             return "Busy", 409
 
