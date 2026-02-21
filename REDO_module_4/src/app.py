@@ -103,7 +103,25 @@ def register_routes(app):
         return redirect(url_for("index", message="Analysis updated with the latest data."))
 
 
+    @app.post("/pull_data")
+    def pull_data():
+        if app.scrape_running:
+            return "Busy", 409
 
+        app.scrape_running = True
+        rows = scrape_data()
+        load_data(rows)
+        app.scrape_running = False
+
+        return "OK", 200
+
+    @app.post("/update_analysis")
+    def update_analysis():
+        if app.scrape_running:
+            return "Busy", 409
+
+        result = get_full_output()
+        return jsonify(result), 200
 
 # ---------------------------------------------------------
 # Run Server (Module 3 behavior)
