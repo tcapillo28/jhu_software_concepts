@@ -3,6 +3,7 @@ from query_data import get_full_output
 import re
 import threading
 
+# Note to run app.py python src/app.py
 
 # ---------------------------------------------------------
 # App Factory (Module 4 requirement)
