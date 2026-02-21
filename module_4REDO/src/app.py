@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
-from query_data import get_full_output
+from src.query_data import get_full_output
 import re
 import threading
 
@@ -86,6 +86,9 @@ def register_routes(app):
         get_full_output()
 
         return redirect(url_for("index", message="Analysis updated with the latest data."))
+
+
+
 
 # ---------------------------------------------------------
 # Run Server (Module 3 behavior)
