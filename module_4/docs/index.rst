@@ -1,8 +1,8 @@
-Welcome to Module 4 Documentation
-=================================
+Module 4 Documentation
+======================
 
-This documentation describes the architecture, API, and testing strategy for the
-Grad Café Analytics application.
+This documentation describes the architecture, API, and testing strategy
+for the Module 4 application.
 
 .. toctree::
    :maxdepth: 2
@@ -13,4 +13,3 @@ Grad Café Analytics application.
    api_reference
    testing_guide
    operational_notes
-   modules
