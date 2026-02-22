@@ -112,18 +112,18 @@ def register_routes(app):
     # Update Analysis Button Route
     # ---------------------------------------------------------
 
-    # @app.route("/update_analysis", methods=["GET"])
-    # def update_analysis():
-    #     nonlocal scrape_running
-    #
-    #     if scrape_running:
-    #         return redirect(url_for("index", message="Cannot update analysis while data is being pulled."))
-    #
-    #     try:
-    #         get_full_output()
-    #         return redirect(url_for("index", message="Analysis updated with the latest data."))
-    #     except Exception as e:
-    #         return f"Error: {str(e)}", 500
+    @app.route("/update_analysis", methods=["GET"])
+    def update_analysis():
+        nonlocal scrape_running
+
+        if scrape_running:
+            return redirect(url_for("index", message="Cannot update analysis while data is being pulled."))
+
+        try:
+            get_full_output()
+            return redirect(url_for("index", message="Analysis updated with the latest data."))
+        except Exception as e:
+            return f"Error: {str(e)}", 500
 
     # ---------------------------------------------------------
     # Module 4 POST routes (these are what your tests expect)
