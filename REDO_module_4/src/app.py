@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from src.query_data import get_full_output, get_static_output
 import src.scrape as scrape_module
 import src.load_data as load_module
@@ -70,6 +70,25 @@ def register_routes(app):
 
     @app.route("/analysis")
     def analysis():
+        """
+        Render the main analysis dashboard page.
+
+        This route serves the HTML page that displays the analysis results along
+        with the required Module 4 interface elements. The page includes:
+        - The visible title text “Analysis”.
+        - The “Pull Data” and “Update Analysis” buttons used to trigger POST routes.
+        - The rendered analysis text, which defaults to the static output in
+          Module 4 (via index()), ensuring predictable formatting for tests.
+
+        The returned HTML is what the test suite inspects to verify that:
+        - The page loads successfully with HTTP 200.
+        - At least one “Answer:” label appears in the rendered analysis.
+        - Any percentages shown are formatted with exactly two decimal places.
+
+        Returns:
+            Response: A fully rendered HTML page containing the analysis dashboard.
+        """
+
         return index()
 
     # ---------------------------------------------------------
@@ -112,7 +131,7 @@ def register_routes(app):
     @app.post("/pull_data")
     def pull_data_api():
         if app.scrape_running:
-            return "Busy", 409
+            return jsonify({"busy": True}), 409
 
         app.scrape_running = True
 
@@ -120,15 +139,18 @@ def register_routes(app):
         load_module.load_data(rows)  # mocked correctly
 
         app.scrape_running = False
-        return "OK", 200
+        return jsonify({"ok": True}), 200
+
 
     @app.post("/update_analysis")
     def update_analysis_api():
         if app.scrape_running:
-            return "Busy", 409
+            return jsonify({"busy": True}), 409
+
 
         result = get_full_output()
-        return result, 200
+        return jsonify({"analysis": result}), 200
+
 
 
 # ---------------------------------------------------------
