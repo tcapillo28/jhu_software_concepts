@@ -112,7 +112,7 @@ def register_routes(app):
     # Update Analysis Button Route
     # ---------------------------------------------------------
 
-    @app.route("/update_analysis")
+    @app.get("/update_analysis")
     def update_analysis():
         nonlocal scrape_running
 
@@ -133,24 +133,28 @@ def register_routes(app):
         if app.scrape_running:
             return jsonify({"busy": True}), 409
 
-        app.scrape_running = True
+        try:
+            app.scrape_running = True
+            rows = scrape_module.scrape_data()
+            load_module.load_data(rows)
+            return jsonify({"ok": True}), 200
 
-        rows = scrape_module.scrape_data()  # mocked correctly
-        load_module.load_data(rows)  # mocked correctly
+        except Exception as e:
+            return f"Error: {str(e)}", 500
 
-        app.scrape_running = False
-        return jsonify({"ok": True}), 200
-
+        finally:
+            app.scrape_running = False
 
     @app.post("/update_analysis")
     def update_analysis_api():
         if app.scrape_running:
             return jsonify({"busy": True}), 409
 
-
-        result = get_full_output()
-        return jsonify({"analysis": result}), 200
-
+        try:
+            result = get_full_output()
+            return jsonify({"analysis": result}), 200
+        except Exception as e:
+            return f"Error: {str(e)}", 500
 
 
 # ---------------------------------------------------------
