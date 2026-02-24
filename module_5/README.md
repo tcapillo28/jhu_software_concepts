@@ -51,7 +51,7 @@ Follow these steps to start the Flask server locally:
    
 3. **Run the Flask app**
     ```bash
-   flask --app module_4/src/app run
+   flask --app src/app run
    
 4. **Open the application in browser**
     ```bash
