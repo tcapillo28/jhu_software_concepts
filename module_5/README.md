@@ -43,7 +43,6 @@ Follow these steps to start the Flask server locally:
 1. **Install and Activate your virtual environment**
     ```bash
    python -m venv venv             # Virtual environment install
-   source venv/bin/activate        # Activate macOS/Linux
    venv\Scripts\activate           # Activate Windows
 2. **Install dependencies**
     ```bash
@@ -57,14 +56,14 @@ Follow these steps to start the Flask server locally:
     ```bash
     http://127.0.0.1:5000/
 
-## Running Tests
+## Running Tests (venv)
 All tests use pytest and are designed to run cleanly without external dependencies.
 Run options: 
 1. Run the full suite:
     ```bash 
     pytest -q
-   2. Run tests by marker:
-       ```bash
+2. Run tests by marker:
+    ```bash
        pytest -m web            # Flask webpage
        pytest -m buttons        # Buttons Pull/Update Analysis
        pytest -m db 
@@ -78,35 +77,25 @@ Run options:
     ```bash
     pytest --cov=app --cov-report=term-missing
 
-## Project Structure
-
-module_4/
-├── docs/                     # Sphinx documentation (source + build)
-├── src/
-│   ├── templates/            # HTML templates for Flask
-│   │   └── analysis.html         # Analysis page template
-│   ├── __init__.py
-│   ├── analysis.py           # Analysis logic used by the app
-│   ├── app.py                # Main Flask application
-│   ├── load_data.py          # Faux database / data loading helpers
-│   ├── scrape.py             # Placeholder scraper logic (Module 3 reference)
-│   └── state.py              # Simple state management for the faux DB
-├── tests/
-│   ├── conftest.py
-│   ├── test_analysis_format.py
-│   ├── test_buttons.py
-│   ├── test_db_insert.py
-│   ├── test_flask_page.py
-│   └── test_integration_end_to_end.py
-├── venv/                     # Virtual environment (not submitted)
-├── .coverage                 # Coverage data file
-├── pytest.ini                # Pytest configuration
-├── README.md                 # Project documentation
-├── actions_success.png       # Screenshot of successful GitHub Actions run
-├── img.png                   # Additional screenshot or image asset
-├── coverage_summary.txt      # Coverage report summary
-└── requirements.txt          # Python dependencies
-
+## Running Pylint (venv)
+### Navigate inside (venv)Module 5 folder:
+1. Install pylint: 
+    ```bash
+    pip install pylint
+3. Run pylint:
+    ```bash
+    pylint src --fail-under=10
+## Generating Python Dependency Graph(venv)
+1. Install in module 5 folder
+    ```bash
+    pip install pydeps 
+2. Install into user's path: 
+3. Create graph:
+    ```bash
+   dot -V
+4.  
+    ```bash
+   pydeps src --noshow -T svg -o dependency.svg
 ## Architecture and Design Decisions
 The architecture for Module 4 is intentionally minimal. The goal of this module was not to build a full production system, but to create a clean, testable Flask application that demonstrates routing, state handling, and analysis logic in a controlled environment.
 
@@ -130,6 +119,26 @@ Key design choices:
 
 - **Module 3 Isolation**  
   Module 3’s scraper and database generation require further fixes, so Module 4 was built independently to ensure the testing concepts could be demonstrated correctly.
+## SQL Injection Defenses (Module_5 Step 2) 
+This project does not use a database engine in Module 5. 
+All data is stored in memory using a Python list (_db), and no SQL queries are executed. 
+Because no SQL is constructed or executed, there is no injection surface. 
+If the project were extended to use PostgreSQL, 
+all queries would need to be implemented using psycopg’s SQL composition utilities (sql.SQL, sql.Identifier, sql.Placeholder) to ensure safe parameterization.
+
+## Database Configuration - Least Privilege (Module_5 Step 3)
+This project does not use a real database in Module 5. 
+A '.env.example' file is included to show how database credentials would be supplied through environment variables. 
+The '.env' file is intentionally excluded via '.gitignore' file to prevent committing secrets. 
+Because the application uses in‑memory storage, no database user or privileges are required. 
+In a real deployment, the application would use a least‑privilege PostgreSQL user with only the permissions needed
+for its operations. I will need to change module_4 to use our GradCafe database - currently updating the tests since finding out I need SQL. 
+Plan to have my module(s) up-to-date to have module_6 working properly.
+
+## Python Dependency Graph
+1. in (venv) dir module_4: 
+    ```bash
+   pydeps src --noshow -T svg -o dependency.svg
 
 ## API Summary
 This section provides a high-level overview of the routes and core functions implemented in the Module 4 application.

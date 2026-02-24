@@ -41,5 +41,4 @@ def set_busy(value: bool):
         None
     """
 
-    global BUSYSTATE
     BUSYSTATE["value"] = value
