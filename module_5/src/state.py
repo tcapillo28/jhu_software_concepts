@@ -14,7 +14,7 @@ This implementation intentionally avoids any concurrency primitives
 because the assignment runs in a single‑threaded test environment.
 """
 
-_busy = False
+busy_state = False
 
 def is_busy():
     """
@@ -25,7 +25,7 @@ def is_busy():
         False otherwise.
     """
 
-    return _busy
+    return busy_state
 
 def set_busy(value: bool):
     """
@@ -39,5 +39,5 @@ def set_busy(value: bool):
         None
     """
 
-    global _busy
-    _busy = value
+    global busy_state
+    busy_state = value

@@ -14,15 +14,17 @@ The goal is to provide a predictable, lightweight storage
 layer for the assignment.
 """
 
-# In-memory "database"
-_db = []
-db_session = None
+# IN-MEMORY DATABASE SESSION
+_db = []            # creates fake database
+db_session = None   # placeholder required by the Module 4/5 test suite
+                    # used a real database session, and the tests still import `db_session` even though the
+                    # in‑memory `_db` list is now used instead.
 
 def insert_rows(rows):
     """
     Insert new rows into the in‑memory database.
 
-    This function appends the provided rows to the global ``_db`` list.
+    This function appends the provided rows to the  ``_db`` list.
     The behavior is intentionally simple because the test suite controls
     the input via mocks. It performs no deduplication, validation, or transformation of rows.
 
