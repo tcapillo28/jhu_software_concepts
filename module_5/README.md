@@ -1,157 +1,110 @@
-# Module_4: Testing & Documentation
-Tonya Capillo | JHED ID: 174BAB | Due Feb 17, 2026 11:59 PM EST | SSH url: git@github.com/tcapillo28/jhu_software_concepts.git
+# Module_5: Software Assurance + Secure SQL
+Tonya Capillo | JHED ID: 174BAB | Due Feb 23, 2026 11:59 PM PST | SSH url: git@github.com/tcapillo28/jhu_software_concepts.git
 
-## Overview 
-This project implements a lightweight Flask application built specifically for Module 4.  
-Before beginning this module, I encountered several issues while testing my Module 3 application.  
-To support the testing goals of Module 4, I built a lightweight Flask application that includes two simplified buttons (“Pull Data” and “Update Analysis”).
-These endpoints were intentionally minimal so their POST behavior, state updates, and analysis formatting could be tested reliably with pytest. 
-This approach allowed me to practice route testing, button testing, and integration testing without relying on the unfinished Module 3 scraper and database.
+## Overview
+Module 5 extends the lightweight Flask application developed in Module 4 
+by adding secure‑coding practices, dependency scanning, and continuous‑integration 
+enforcement. The Module 4 application was intentionally minimal because several 
+components of Module 3 (scraper, database generation, and end‑to‑end button behavior) 
+required further fixes. To ensure reliable testing, Module 4 used a simplified 
+faux‑database design with predictable routes and state transitions.
 
-Multiple components in Module 3 require further review, including:
+Module 5 builds on that foundation and introduces:
+- secure coding and SQL‑injection defenses
+- least‑privilege database configuration
+- dependency scanning with Snyk
+- CI enforcement using GitHub Actions
+- automated linting, testing, and dependency‑graph generation
+The goal is to “shift security left” by integrating security checks directly into the development workflow
 
-- generating the database correctly  
-- ensuring the scraper collects all required fields (GPA, GRE, comments, etc.)  
-- producing an `llm_extend_applicant_data.json` file that matches the structure of the professor’s example  
-- verifying that the “Pull Data” and “Update Analysis” buttons function end‑to‑end  
+## Step 2: Secure Coding Practices 
+Secure Coding Practices (Step 2)
+Module 5 does not use a real SQL database. All data is stored in memory using a Python list (). 
+Because no SQL queries are constructed or executed, there is no injection surface in this module.
+If the project were extended to use PostgreSQL, all queries would need to be constructed using
+psycopg’s safe SQL‑composition utilities (, , ) to ensure proper parameterization.
 
-Because these gaps prevented reliable testing, I paused work on the Module 3 test suite until the underlying functionality can be corrected.
+## Step 3: Least Privilege Database Configuration
+Although Module 5 does not connect to a real database, a .env.example file is included to
+demonstrate how credentials would be supplied through environment variables. 
+The real .env file is excluded via .gitignore to prevent committing secrets.
+In a real deployment, the application would use a least‑privilege PostgreSQL user with only the
+permissions required for its operations.
 
-For Module 4, Copilot recommended building a minimal Flask application with a faux database layer.  
-This allowed me to focus on understanding the testing framework itself — isolated routes, predictable utility functions, and a clean environment for pytest — without being blocked by the unresolved Module 3 issues.
+## Why Steps 2 and 3 Are Conceptual in this Module
+Module 5 builds on the lightweight Flask application created in Module 4, which intentionally uses an in‑memory faux‑database instead of a real PostgreSQL instance. Because no SQL engine, cursor, or query construction exists in this module, there is no SQL injection surface and no database user to harden. As a result, Steps 2 and 3 are implemented conceptually rather than through code changes.
+The security principles are still documented:
+- Step 2 explains how SQL injection would be prevented if a real database layer were added (using psycopg’s safe SQL‑composition utilities).
+- Step 3 demonstrates least‑privilege configuration through a .env.example file and secret‑management practices, even though no real credentials are used.
+A real PostgreSQL integration will be introduced once Module 3’s scraper and database generation are corrected, at which point these defenses will be implemented in full.
 
-The result is a small, self‑contained Flask app designed to demonstrate:
 
-- clean project structure  
-- functional routing  
-- a simple in‑memory or JSON‑based storage layer  
-- a fully passing pytest suite  
-- Sphinx documentation generated from the codebase  
+## Step 6: Dependency Scanning with Snyk
+Running'snyk test'
+scanned 36 dependencies and identified two vulnerabilities:
+- flask@3.1.2 — Low severity
+- werkzeug@3.1.5 — Medium severity
+Both were resolved by upgrading to the patched versions (flask@3.1.3, werkzeug@3.1.6)
+- A second scan confirmed that all vulnerabilities were fixed. The screenshot is included as 
 
-This module intentionally avoids the complexity of Module 3 so that the testing concepts can be learned and exercised.
-The application is intentionally minimal: it exposes a small set of routes, performs simple computations, and provides a predictable surface for automated testing and documentation.
+## Step 6 - Extra Credit
+Running 'snyk code test' returned a 403 error because Snyk Code is not available for free‑tier organizations. 
+The error screenshot is included for documentation.
 
----
+## Step 7: CI with GitHub Actions
+Continuous Integration with GitHub Actions (Step 7)
+A GitHub Actions workflow (.github/workflows/ci.yml) enforces “shift‑left security” by running on every push and pull request. The workflow performs four checks:
+- Pylint with --fail-under=10
+- Dependency graph generation using pydeps + Graphviz
+- Snyk dependency scan (non‑blocking)
+- Pytest with 100% coverage enforcement
+This ensures that linting, testing, dependency scanning, and dependency‑graph generation all run automatically in CI.
 
-## Documentation
-Full project documentation is available on Read the Docs:
-https://jhu-software-concepts-module-4-tc.readthedocs.io/en/latest/
-
-## How to Run the Application
-Follow these steps to start the Flask server locally:
-
-1. **Install and Activate your virtual environment**
+## How to  Run the Application 
+1. Create and activate a virtual environment:
     ```bash
-   python -m venv venv             # Virtual environment install
-   venv\Scripts\activate           # Activate Windows
-2. **Install dependencies**
+    python -m venv venv
+    .\venv\Scripts\activate
+2. Install dependencies
     ```bash
-   pip install -r requirements.txt
-   
-3. **Run the Flask app**
+    pip install -r requirements.txt
+3. Run the Flask app
     ```bash
-   flask --app src/app run
-   
-4. **Open the application in browser**
-    ```bash
-    http://127.0.0.1:5000/
+    flask --app src/app run
+4. Open in browser
+http://127.0.0.1:5000/
 
-## Running Tests (venv)
-All tests use pytest and are designed to run cleanly without external dependencies.
-Run options: 
-1. Run the full suite:
-    ```bash 
-    pytest -q
-2. Run tests by marker:
+## Running Test
+1. Full Suite:
     ```bash
-       pytest -m web            # Flask webpage
-       pytest -m buttons        # Buttons Pull/Update Analysis
-       pytest -m db 
-       pytest -m analysis
-       pytest -m integration
-3. Run test by keyword:
+   pytest-q
+2. By marker:
     ```bash
-    pytest -k route
-    pytest -k compute
-4. Run with coverage:
+   pytest -m web
+    pytest -m buttons
+    pytest -m db
+    pytest -m analysis
+    pytest -m integration
+3. With coverage:
     ```bash
-    pytest --cov=app --cov-report=term-missing
+     pytest --cov=src --cov-report=term-missing
 
-## Running Pylint (venv)
-### Navigate inside (venv)Module 5 folder:
-1. Install pylint: 
-    ```bash
-    pip install pylint
-3. Run pylint:
-    ```bash
+## Running Pylint
+    
     pylint src --fail-under=10
-## Generating Python Dependency Graph(venv)
-1. Install in module 5 folder
-    ```bash
-    pip install pydeps 
-2. Install into user's path: 
-3. Create graph:
-    ```bash
-   dot -V
-4.  
-    ```bash
-   pydeps src --noshow -T svg -o dependency.svg
-## Architecture and Design Decisions
-The architecture for Module 4 is intentionally minimal. The goal of this module was not to build a full production system, but to create a clean, testable Flask application that demonstrates routing, state handling, and analysis logic in a controlled environment.
 
-Key design choices:
-
-- **Lightweight Flask Application**  
-  The app exposes only the routes required for testing. This keeps the behavior predictable and easy to validate.
-
-- **Faux Database Layer**  
-  Instead of integrating a real database, the project uses simple JSON/state helpers. This avoids external dependencies and ensures tests run consistently.
-
-- **Separation of Concerns**  
-  - `app.py` handles routing  
-  - `analysis.py` contains analysis logic  
-  - `load_data.py` and `state.py` manage faux‑database operations  
-  - `templates/` contains HTML output  
-  This separation makes each component independently testable.
-
-- **Test‑Driven Structure**  
-  The project layout was chosen to support pytest fixtures, route testing, and integration tests without relying on Module 3’s incomplete functionality.
-
-- **Module 3 Isolation**  
-  Module 3’s scraper and database generation require further fixes, so Module 4 was built independently to ensure the testing concepts could be demonstrated correctly.
-## SQL Injection Defenses (Module_5 Step 2) 
-This project does not use a database engine in Module 5. 
-All data is stored in memory using a Python list (_db), and no SQL queries are executed. 
-Because no SQL is constructed or executed, there is no injection surface. 
-If the project were extended to use PostgreSQL, 
-all queries would need to be implemented using psycopg’s SQL composition utilities (sql.SQL, sql.Identifier, sql.Placeholder) to ensure safe parameterization.
-
-## Database Configuration - Least Privilege (Module_5 Step 3)
-This project does not use a real database in Module 5. 
-A '.env.example' file is included to show how database credentials would be supplied through environment variables. 
-The '.env' file is intentionally excluded via '.gitignore' file to prevent committing secrets. 
-Because the application uses in‑memory storage, no database user or privileges are required. 
-In a real deployment, the application would use a least‑privilege PostgreSQL user with only the permissions needed
-for its operations. I will need to change module_4 to use our GradCafe database - currently updating the tests since finding out I need SQL. 
-Plan to have my module(s) up-to-date to have module_6 working properly.
-
-## Python Dependency Graph
-1. in (venv) dir module_4: 
-    ```bash
-   pydeps src --noshow -T svg -o dependency.svg
+## Generating the Dependency Graph
+    pydeps src --noshow -T svg -o dependency.svg
 
 ## Fresh Install
-1. Using pip
-This method uses Python’s standard virtual environment tools.
+1. Using pip: This method uses Python’s standard virtual‑environment tools.
     ```bash
     python -m venv venv
     .\venv\Scripts\activate
     pip install --upgrade pip
     pip install -e .
     pip install -r requirements.txt
- 
-2. Using uv
-This method uses uv to create and synchronize the environment. 
+2. Using uv: This method uses uv to create and synchronize the environment.
 If uv is not on PATH, call it using its full installation path.
     ```bash
     uv.exe venv venv
@@ -160,63 +113,26 @@ If uv is not on PATH, call it using its full installation path.
     uv.exe pip sync requirements.txt
 
 ## API Summary
-This section provides a high-level overview of the routes and core functions implemented in the Module 4 application.
-
 ### Routes
+- GET / — Displays current faux‑database state
+- POST /pull — Simulates pulling new data
+- POST /update_analysis — Runs analysis and updates output
+- GET /analysis — Renders formatted analysis results
 
-- **GET /**  
-  Renders the main page and displays the current state of the faux database.
-
-- **POST /pull**  
-  Simulates pulling new data into the faux database. Used for testing button behavior.
-
-- **POST /update_analysis**  
-  Runs the analysis logic and updates the analysis output. Tested for correct formatting and state changes.
-
-- **GET /analysis**  
-  Renders the `analysis.html` template showing the formatted analysis results.
-
-### Core Logic
-
-- **analysis.py**  
-  Contains the formatting and computation logic used to generate the analysis output.
-
-- **load_data.py**  
-  Handles reading and writing faux‑database content.
-
-- **state.py**  
-  Maintains simple in‑memory state for testing workflows.
-
-These components are intentionally simple so the testing suite can focus on correctness, formatting, and workflow behavior.
+### Core logic
+- analysis.py — formatting and computation
+- load_data.py — faux‑database read/write
+- state.py — in‑memory state management
 
 ## Known Limitations
-This Module 4 application is intentionally minimal and does not include:
-
-- a real database or persistent storage  
-- a fully functional scraper  
-- integration with Module 3’s data pipeline  
-- production-level error handling  
-- complex routing or multi-step workflows  
-
-Additionally, Module 3 requires further review before its test suite can be completed:
-
-- the scraper does not collect all required fields (GPA, GRE, comments, etc.)
-- the database generation step is incomplete
-- the resulting `llm_extend_applicant_data.json` file does not match the professor’s example
-- the “Pull Data” and “Update Analysis” buttons do not function correctly in Module 3 due to upstream issues
-
-These issues prevented reliable testing in Module 3, which is why Module 4 uses simplified button endpoints designed specifically for testing.
+- No real database or persistent storage
+- No production‑level error handling
+- Module 3’s scraper and database generation still require fixes
+- Module 4/5 use simplified endpoints to support testing and security tooling
 
 ## Future Improvements
-Planned next steps include:
-
-- Fixing the Module 3 scraper to collect all required fields  
-- Regenerating the database to match the expected schema  
-- Ensuring the `llm_extend_applicant_data.json` output matches the professor’s example  
-- Debugging the Pull/Update buttons in Module 3 so they work end‑to‑end  
-- Expanding the Module 4 application to include:
-  - real database integration
-  - additional routes and workflows
-  - more robust analysis logic
-  - integration tests that simulate real user behavior
-  - improved UI templates for clarity and usability
+- Fix Module 3 scraper and regenerate database
+- Integrate real PostgreSQL with least‑privilege roles
+- Expand analysis logic
+- Add more realistic workflows and UI improvements
+- Extend CI to include type‑checking and static analysis
