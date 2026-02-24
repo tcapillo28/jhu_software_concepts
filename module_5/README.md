@@ -1,5 +1,7 @@
 # Module_5: Software Assurance + Secure SQL
-Tonya Capillo | JHED ID: 174BAB | Due Feb 23, 2026 11:59 PM PST | SSH url: git@github.com/tcapillo28/jhu_software_concepts.git
+Tonya Capillo | JHED ID: 174BAB | Due Feb 23, 2026 11:59 PM PST | SSH url: git@github.com/tcapillo28/jhu_software_concepts.git |
+RTD URL: https://jhu-software-concepts-module-4-tc.readthedocs.io/en/latest/
+
 
 ## Overview
 Module 5 extends the lightweight Flask application developed in Module 4 
