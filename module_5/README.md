@@ -140,6 +140,25 @@ Plan to have my module(s) up-to-date to have module_6 working properly.
     ```bash
    pydeps src --noshow -T svg -o dependency.svg
 
+## Fresh Install
+1. Using pip
+This method uses Python’s standard virtual environment tools.
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate
+    pip install --upgrade pip
+    pip install -e .
+    pip install -r requirements.txt
+ 
+2. Using uv
+This method uses uv to create and synchronize the environment. 
+If uv is not on PATH, call it using its full installation path.
+    ```bash
+    uv.exe venv venv
+    .\venv\Scripts\activate
+    uv.exe pip install -e .
+    uv.exe pip sync requirements.txt
+
 ## API Summary
 This section provides a high-level overview of the routes and core functions implemented in the Module 4 application.
 
