@@ -1,46 +1,44 @@
+"""
+    Flask application for the Module 4 analytics dashboard.
+    
+    This module defines the Flask application factory and all HTTP routes used
+    in the assignment. The application provides:
+    
+    - A redirect from the home page to the analysis page.
+    - A page that renders the current analysis results using a Jinja2 template.
+    - An endpoint to trigger a data pull (mocked in tests).
+    - An endpoint to recompute and return analysis results as JSON.
+    
+    All data operations (loading, scraping, analysis, and busy‑state tracking)
+    are delegated to helper modules inside ``src/``. During testing, these
+    functions are patched/mocked, so the Flask routes only orchestrate workflow.
+"""
 from flask import Flask, jsonify, render_template, redirect
 from . import load_data, scrape, analysis, state
 
-"""
-Flask application for the Module 4 analytics dashboard.
-
-This module defines the Flask application factory and all HTTP routes used
-in the assignment. The application provides:
-
-- A redirect from the home page to the analysis page.
-- A page that renders the current analysis results using a Jinja2 template.
-- An endpoint to trigger a data pull (mocked in tests).
-- An endpoint to recompute and return analysis results as JSON.
-
-All data operations (loading, scraping, analysis, and busy‑state tracking)
-are delegated to helper modules inside ``src/``. During testing, these
-functions are patched/mocked, so the Flask routes only orchestrate workflow.
-"""
-
-
 
 def create_app():
+    """
+        Create and configure the Flask application.
+
+        This function is used by both the real application and the pytest suite.
+        It registers all routes and returns a fully configured Flask instance.
+
+        Returns:
+            Flask: The configured Flask application.
+    """
+
     app = Flask(__name__)
     print("CREATE_APP RAN") # print statement for sanity check of app creation
 
-    """
-    Create and configure the Flask application.
-
-    This function is used by both the real application and the pytest suite.
-    It registers all routes and returns a fully configured Flask instance.
-
-    Returns:
-        Flask: The configured Flask application.
-    """
-
-
     @app.get("/")
     def home():
-        """
-        Redirect the user to the analysis page.
 
-        Returns:
-            Response: A redirect response pointing to ``/analysis``.
+        """
+            Redirect the user to the analysis page.
+
+            Returns:
+                Response: A redirect response pointing to ``/analysis``.
         """
 
         return redirect("/analysis")
