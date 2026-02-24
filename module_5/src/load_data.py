@@ -16,6 +16,7 @@ layer for the assignment.
 
 # In-memory "database"
 _db = []
+db_session = None
 
 def insert_rows(rows):
     """
@@ -32,7 +33,6 @@ def insert_rows(rows):
         None
     """
 
-    global _db
     _db.extend(rows)
 
 def get_all_rows():
