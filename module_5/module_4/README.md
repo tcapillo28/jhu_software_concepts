@@ -63,11 +63,13 @@ Run options:
 1. Run the full suite:
     ```bash 
     pytest -q
-2. Run tests by marker:
-    ```bash
-    pytest -m web
-    pytest -m utils
-    pytest -m integration
+   2. Run tests by marker:
+       ```bash
+       pytest -m web            # Flask webpage
+       pytest -m buttons        # Buttons Pull/Update Analysis
+       pytest -m db 
+       pytest -m analysis
+       pytest -m integration
 3. Run test by keyword:
     ```bash
     pytest -k route
