@@ -1,24 +1,28 @@
 """
 In‑memory storage utilities for Module 4.
 
-This module provides a minimal fake database used for testing and for the
-Flask application. Instead of writing a real database,
-rows are stored in a module‑level list named ``_db``.
+This module implements a lightweight, list‑based storage layer used by both the
+Flask application and the test suite. Instead of connecting to a real database,
+rows are accumulated in the module‑level list ``_db`` so that tests can easily
+control, inspect, and reset application state.
 
 The test suite interacts with this module by:
 - mocking the scraper to supply controlled rows
 - calling ``insert_rows`` to append new entries
 - calling ``get_all_rows`` to retrieve the current state
 
-The goal is to provide a predictable, lightweight storage
-layer for the assignment.
+A placeholder variable named ``db_session_value`` is also defined because earlier
+versions of the assignment used a real database session, and the test suite still
+imports this symbol. It is intentionally set to ``None`` and unused by the
+current in‑memory implementation.
+
+This design keeps the storage layer predictable, isolated, and fully compatible
+with the single‑threaded test environment used in the assignment.
 """
 
 # IN-MEMORY DATABASE SESSION
 _db = []            # creates fake database
-db_session = None   # placeholder required by the Module 4/5 test suite
-                    # used a real database session, and the tests still import `db_session` even though the
-                    # in‑memory `_db` list is now used instead.
+DB_SESSION = None
 
 def insert_rows(rows):
     """

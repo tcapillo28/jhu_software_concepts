@@ -1,20 +1,22 @@
 """
 In‑memory busy‑state tracking for Module 4.
 
-This module provides a minimal mechanism for preventing overlapping
-operations in the Flask application. The state is stored in a simple
-boolean variable named ``_busy`` so that tests can easily patch or
-inspect it.
+This module provides a lightweight mechanism for preventing overlapping
+operations in the Flask application. The busy flag is stored inside the
+module‑level dictionary ``BUSY_STATE`` so that tests can easily patch or
+inspect it without requiring a real concurrency primitive.
 
 The busy flag is used by:
 - ``/pull-data`` to prevent concurrent data pulls
 - ``/update-analysis`` to avoid recomputing analysis during a pull
 
-This implementation intentionally avoids any concurrency primitives
-because the assignment runs in a single‑threaded test environment.
+Because the assignment runs in a single‑threaded test environment, this
+implementation intentionally avoids locks, semaphores, or other
+synchronization constructs. Mutating the dictionary value is sufficient
+for ensuring predictable behavior during testing.
 """
 
-busy_state = False
+BUSYSTATE = {"value":False}
 
 def is_busy():
     """
@@ -25,7 +27,7 @@ def is_busy():
         False otherwise.
     """
 
-    return busy_state
+    return BUSYSTATE["value"]
 
 def set_busy(value: bool):
     """
@@ -39,5 +41,5 @@ def set_busy(value: bool):
         None
     """
 
-    global busy_state
-    busy_state = value
+    global BUSYSTATE
+    BUSYSTATE["value"] = value
