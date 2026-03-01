@@ -1,0 +1,4 @@
+services:
+  test:
+    image: alpine
+    command: ["echo", "Compose is working"]
