@@ -1,0 +1,1 @@
+print("DB loader placeholder – will load JSON into PostgreSQL later.")

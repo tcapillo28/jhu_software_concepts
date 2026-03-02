@@ -1,9 +1,3 @@
- # -----------------------------------------------------------------------------------
-# Script created using llm_extend_applicant_data.json from Liv.
-# Using Windows psycopg2
-# To change the input file. Go to bottom of this file in main and insert the full file path
-# ___________________________________________________________________________________
-
 import json
 import psycopg2
 import datetime
@@ -47,6 +41,34 @@ def strip_nul(value):
     return value
 
 
+def insert_applicant(cur, row):
+    cur.execute(
+        """
+        INSERT INTO applicants (
+            program, comments, date_added, url, status, term,
+            us_or_international, gpa, gre, gre_v, gre_aw, degree,
+            llm_generated_program, llm_generated_university
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+        (
+            strip_nul(row.get("program")),
+            strip_nul(row.get("comments")),
+            clean_date(strip_nul(row.get("date_added"))),
+            strip_nul(row.get("url")),
+            strip_nul(row.get("applicant_status")),
+            strip_nul(row.get("semester_year_start")),
+            strip_nul(row.get("citizenship")),
+            clean_float(strip_nul(row.get("gpa"))),
+            clean_float(strip_nul(row.get("gre"))),
+            clean_float(strip_nul(row.get("gre_v"))),
+            clean_float(strip_nul(row.get("gre_aw"))),
+            strip_nul(row.get("masters_or_phd")),
+            strip_nul(row.get("llm-generated-program")),
+            strip_nul(row.get("llm-generated-university"))
+        )
+    )
+
 def load_data(json_path):
     """
     Opens the database, reads cleaned JSON, inserts every record into PostgreSQL.
@@ -55,9 +77,9 @@ def load_data(json_path):
     # 1. Connect to PostgreSQL
     conn = psycopg2.connect(
         dbname="gradcafe",
-        user="postgres",
-        password="2828",
-        host="localhost",
+        user="app_writer",
+        password="writer",
+        host="db",
         port=5432
     )
     cur = conn.cursor()
@@ -121,4 +143,4 @@ def load_data(json_path):
 
 
 if __name__ == "__main__":
-    load_data(r"C:\Users\tonya\PycharmProjects\jhu_software_concepts\module_3\llm_extend_applicant_data_Provided.json")
+    load_data(r"/module_3/llm_extend_applicant_data_Provided.json")

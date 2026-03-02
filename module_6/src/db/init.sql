@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS applicants (
+    p_id SERIAL PRIMARY KEY
+);
